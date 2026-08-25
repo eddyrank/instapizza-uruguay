@@ -1,0 +1,322 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import PlaceholderImage from '../components/PlaceholderImage.astro';
+import MenuRow from '../components/MenuRow.astro';
+import InfoCard from '../components/InfoCard.astro';
+import { business } from '../lib/business';
+import { restaurantSchema, websiteSchema } from '../lib/schema';
+import {
+  pizzas,
+  burgers,
+  chivitos,
+  milanesaNapolitanaPlato,
+  milanesas,
+  tortugon,
+  friendlyBox,
+} from '../lib/menu';
+
+const todayHours = business.hours[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
+---
+
+<BaseLayout
+  title={`${business.name} — Pizza, Burgers y Chivitos a domicilio en San Carlos`}
+  description={business.description}
+  schema={[restaurantSchema(), websiteSchema()]}
+>
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-ink-950 bg-gingham">
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950/60 via-ink-950/85 to-ink-950" aria-hidden="true"></div>
+    <div class="container-wide relative section-padding grid gap-10 lg:grid-cols-2 lg:items-center">
+      <div>
+        <p class="font-script text-3xl text-sauce-400">Recién salida del horno</p>
+        <h1 class="mt-2 text-5xl leading-[1.05] sm:text-6xl">
+          Insta<span class="text-cream-50">pizza</span> Delivery
+        </h1>
+        <p class="mt-5 max-w-md text-lg text-cream-100/85">
+          {business.tagline} en San Carlos, Maldonado. Pizzas al molde, burgers, chivitos, milanesas y sandwiches
+          artesanales — pedís por WhatsApp y te lo llevamos a la puerta.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href={business.whatsappHref} target="_blank" rel="noopener noreferrer" class="btn-primary">
+            Pedí por WhatsApp
+          </a>
+          <a href="#menu" class="btn-outline">Ver el menú</a>
+        </div>
+        <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-cream-100/80">
+          <span class="inline-flex items-center gap-1.5">
+            <svg aria-hidden="true" viewBox="0 0 20 20" class="h-4 w-4 fill-gold-400"><path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.8L10 14.9l-5.2 2.62.99-5.8-4.21-4.1 5.82-.85z"/></svg>
+            {business.rating.value} · {business.rating.count} reseñas en Google
+          </span>
+          <span>·</span>
+          <span>{business.address.city}, {business.address.region}</span>
+        </div>
+      </div>
+      <PlaceholderImage
+        label="Foto real: pizza / caja Instapizza — reemplazar con imagen del cliente"
+        aspect="aspect-[4/3]"
+        class="lg:aspect-square"
+      />
+    </div>
+  </section>
+
+  <!-- Info at a glance -->
+  <section class="border-y border-ink-700 bg-ink-900">
+    <div class="container-wide section-padding !py-10">
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <InfoCard label="Hoy" value={todayHours.opens ? `${todayHours.opens} – ${todayHours.closes}` : 'Cerrado'} detail={todayHours.day} />
+        <InfoCard label="Calificación" value={`${business.rating.value}★`} detail={`${business.rating.count} reseñas`} />
+        <InfoCard label="Pedidos" value="WhatsApp" detail={business.phoneDisplay} />
+        <InfoCard label="Zona" value="San Carlos" detail="Maldonado" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Menu -->
+  <section id="menu" class="section-padding">
+    <div class="container-wide">
+      <SectionHeading eyebrow="Nuestro menú" title="Todo lo que pedís, en una caja" />
+
+      <!-- Pizzas -->
+      <div class="mt-14">
+        <h3 class="text-2xl">Pizzas</h3>
+        <div class="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+          <div class="rounded-xl border border-gold-600/40 bg-ink-900 p-6">
+            <p class="font-script text-2xl text-sauce-400">Muzza</p>
+            <p class="mt-1 text-sm text-cream-100/70">{pizzas.base.size}</p>
+            <p class="mt-3 price-tag text-4xl">${pizzas.base.price}</p>
+            <p class="mt-6 text-sm font-semibold uppercase tracking-wide text-gold-400">Recomendadas</p>
+            <ul class="mt-2 flex flex-wrap gap-2">
+              {
+                pizzas.recommended.map((p) => (
+                  <li class="rounded-full border border-ink-600 px-3 py-1 text-xs text-cream-100/80">{p}</li>
+                ))
+              }
+            </ul>
+          </div>
+          <div class="grid gap-6 sm:grid-cols-3">
+            <div class="rounded-xl border border-ink-700 bg-ink-900 p-5">
+              <p class="text-sm font-semibold uppercase tracking-wide text-cream-100/60">{pizzas.common.label}</p>
+              <p class="price-tag mt-1 text-2xl">+${pizzas.common.price}</p>
+              <ul class="mt-3 space-y-1 text-sm text-cream-100/80">
+                {pizzas.common.items.map((i) => <li>{i}</li>)}
+              </ul>
+            </div>
+            <div class="rounded-xl border border-ink-700 bg-ink-900 p-5">
+              <p class="text-sm font-semibold uppercase tracking-wide text-cream-100/60">{pizzas.special.label}</p>
+              <p class="price-tag mt-1 text-2xl">+${pizzas.special.price}</p>
+              <ul class="mt-3 space-y-1 text-sm text-cream-100/80">
+                {pizzas.special.items.map((i) => <li>{i}</li>)}
+              </ul>
+            </div>
+            <div class="rounded-xl border border-sauce-600/50 bg-ink-900 p-5">
+              <p class="text-sm font-semibold uppercase tracking-wide text-cream-100/60">{pizzas.premium.label}</p>
+              <p class="price-tag mt-1 text-2xl">+${pizzas.premium.price}</p>
+              <ul class="mt-3 space-y-1 text-sm text-cream-100/80">
+                {pizzas.premium.items.map((i) => <li>{i}</li>)}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Burgers -->
+      <div class="mt-16">
+        <h3 class="text-2xl">Burgers</h3>
+        <div class="mt-6 grid gap-x-10 sm:grid-cols-2">
+          {burgers.map((b) => <MenuRow name={b.name} description={b.description} prices={[{ value: b.price }]} />)}
+        </div>
+      </div>
+
+      <!-- Chivitos -->
+      <div class="mt-16">
+        <h3 class="text-2xl">Chivitos</h3>
+        <p class="mt-2 text-sm text-cream-100/70">Todos incluyen papas fritas.</p>
+        <div class="mt-6">
+          {
+            chivitos.map((c) => (
+              <MenuRow
+                name={c.name}
+                description={c.description}
+                prices={[
+                  { label: '1', value: c.single },
+                  { label: '2', value: c.double },
+                ]}
+              />
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Milanesas -->
+      <div class="mt-16">
+        <h3 class="text-2xl">Milanesas</h3>
+        <div class="mt-6 grid gap-x-10 lg:grid-cols-2">
+          <div>
+            <div class="rounded-xl border border-sauce-600/50 bg-ink-900 p-5">
+              <MenuRow
+                name={milanesaNapolitanaPlato.name}
+                description={milanesaNapolitanaPlato.description}
+                prices={[{ value: milanesaNapolitanaPlato.price }]}
+              />
+            </div>
+            <p class="mt-3 text-xs uppercase tracking-wide text-cream-100/50">Plato — con ensalada mixta y papas fritas</p>
+          </div>
+          <div>
+            {milanesas.map((m) => <MenuRow name={m.name} description={m.description} prices={[{ value: m.price }]} />)}
+          </div>
+        </div>
+      </div>
+
+      <!-- Sandwiches -->
+      <div class="mt-16">
+        <h3 class="text-2xl">Sandwiches</h3>
+        <div class="mt-6 grid gap-8 lg:grid-cols-2 lg:items-center">
+          <PlaceholderImage label="Foto real: Tortugón de Carne Picada — reemplazar con imagen del cliente" />
+          <div class="rounded-xl border border-gold-600/40 bg-ink-900 p-6">
+            <h4 class="font-display text-xl normal-case tracking-normal text-cream-50">{tortugon.name}</h4>
+            <p class="mt-2 text-sm text-cream-100/70">{tortugon.description}</p>
+            <div class="mt-5 flex flex-wrap gap-6">
+              <div>
+                <p class="text-xs uppercase tracking-wide text-cream-100/60">Sin fritas</p>
+                <p class="price-tag text-2xl">${tortugon.sinFritas}</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wide text-cream-100/60">Con fritas</p>
+                <p class="price-tag text-2xl">${tortugon.conFritas}</p>
+              </div>
+              <div class="rounded-lg border border-sauce-500 px-4 py-2">
+                <p class="text-xs uppercase tracking-wide text-sauce-400">Super promo + Coca 1.5L</p>
+                <p class="price-tag text-2xl">${tortugon.promoConCoca}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Combos -->
+      <div class="mt-16">
+        <h3 class="text-2xl">Combos</h3>
+        <div class="mt-6 rounded-xl border border-gold-600/40 bg-ink-900 p-6 sm:p-8">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h4 class="font-display text-xl normal-case tracking-normal text-cream-50">{friendlyBox.name}</h4>
+              <p class="mt-1 max-w-md text-sm text-cream-100/70">{friendlyBox.description}</p>
+            </div>
+          </div>
+          <div class="mt-6 grid gap-4 sm:grid-cols-3">
+            {
+              friendlyBox.options.map((o) => (
+                <div class="rounded-lg border border-ink-700 bg-ink-950 p-4 text-center">
+                  <p class="text-sm font-semibold uppercase tracking-wide text-cream-100/70">{o.name}</p>
+                  <p class="price-tag mt-1 text-3xl">${o.price}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="nosotros" class="border-t border-ink-700 bg-ink-900 section-padding">
+    <div class="container-wide grid gap-10 lg:grid-cols-2 lg:items-center">
+      <PlaceholderImage label="Foto real: equipo / local Instapizza — reemplazar con imagen del cliente" />
+      <div>
+        <SectionHeading eyebrow="Nosotros" title="Sabor casero, entregado rápido" align="left" />
+        <p class="mt-5 text-cream-100/80">
+          En Instapizza Delivery preparamos pizzas al molde, burgers, chivitos y milanesas como se hacen en casa,
+          con ingredientes frescos y porciones generosas. Trabajamos todas las noches para que San Carlos tenga
+          delivery de comida casera hecha con dedicación.
+        </p>
+        <p class="mt-4 text-cream-100/80">
+          Hacé tu pedido por WhatsApp y lo tenés en la puerta de tu casa, calentito y recién salido de la cocina.
+        </p>
+        <div class="mt-6 flex items-center gap-2 text-cream-100/80">
+          <svg aria-hidden="true" viewBox="0 0 20 20" class="h-5 w-5 fill-gold-400"><path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.8L10 14.9l-5.2 2.62.99-5.8-4.21-4.1 5.82-.85z"/></svg>
+          <span><strong class="text-cream-50">{business.rating.value} de 5</strong> — {business.rating.count} reseñas en Google</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section id="galeria" class="section-padding">
+    <div class="container-wide">
+      <SectionHeading eyebrow="Galería" title="Lo que sale de nuestra cocina" />
+      <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <PlaceholderImage label="Foto: pizza de langostinos" aspect="aspect-square" />
+        <PlaceholderImage label="Foto: pizza jamón y cheddar" aspect="aspect-square" />
+        <PlaceholderImage label="Foto: burger" aspect="aspect-square" />
+        <PlaceholderImage label="Foto: sandwich de lomo" aspect="aspect-square" />
+        <PlaceholderImage label="Foto: Friendly Box" aspect="aspect-square" />
+        <PlaceholderImage label="Foto: milanesa napolitana" aspect="aspect-square" />
+        <PlaceholderImage label="Foto: chivito" aspect="aspect-square" />
+        <PlaceholderImage label="Foto: local / cocina" aspect="aspect-square" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Location -->
+  <section id="ubicacion" class="border-t border-ink-700 bg-ink-900 section-padding">
+    <div class="container-wide grid gap-10 lg:grid-cols-2">
+      <div>
+        <SectionHeading eyebrow="Encontranos" title="Ubicación y horarios" align="left" />
+        <address class="not-italic mt-6 space-y-4 text-cream-100/85">
+          <p class="flex items-start gap-3">
+            <svg aria-hidden="true" viewBox="0 0 20 20" class="mt-0.5 h-5 w-5 shrink-0 fill-gold-400"><path d="M10 1a6 6 0 0 0-6 6c0 4.5 6 12 6 12s6-7.5 6-12a6 6 0 0 0-6-6zm0 8.5A2.5 2.5 0 1 1 12.5 7 2.5 2.5 0 0 1 10 9.5z"/></svg>
+            <span>{business.address.full}</span>
+          </p>
+          <p class="flex items-center gap-3">
+            <svg aria-hidden="true" viewBox="0 0 20 20" class="h-5 w-5 shrink-0 fill-gold-400"><path d="M18 13.42v3a1.5 1.5 0 0 1-1.64 1.5 14.9 14.9 0 0 1-6.5-2.31 14.7 14.7 0 0 1-4.5-4.5A14.9 14.9 0 0 1 3.05 4.6 1.5 1.5 0 0 1 4.54 3h3a1.5 1.5 0 0 1 1.5 1.29c.1.76.28 1.5.54 2.22a1.5 1.5 0 0 1-.34 1.58l-1.27 1.27a12 12 0 0 0 4.5 4.5l1.27-1.27a1.5 1.5 0 0 1 1.58-.34c.72.26 1.46.44 2.22.54A1.5 1.5 0 0 1 18 13.42z"/></svg>
+            <a href={business.phoneHref} class="transition hover:text-gold-400">{business.phoneDisplay}</a>
+          </p>
+        </address>
+        <table class="mt-6 w-full max-w-sm text-sm text-cream-100/80">
+          <caption class="sr-only">Horario de atención de {business.name}</caption>
+          <tbody>
+            {
+              business.hours.map((h) => (
+                <tr class="border-b border-ink-700">
+                  <th scope="row" class="py-2 text-left font-normal">{h.day}</th>
+                  <td class="py-2 text-right">{h.opens ? `${h.opens} – ${h.closes}` : 'Cerrado'}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href={business.whatsappHref} target="_blank" rel="noopener noreferrer" class="btn-primary">
+            Pedí por WhatsApp
+          </a>
+          <a href={business.mapsUrl} target="_blank" rel="noopener noreferrer" class="btn-outline">
+            Cómo llegar
+          </a>
+        </div>
+      </div>
+      <div class="overflow-hidden rounded-xl border border-ink-700">
+        <iframe
+          src={business.mapsEmbedSrc}
+          width="100%"
+          height="100%"
+          style="border:0; min-height: 380px;"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          title={`Mapa de ubicación de ${business.name}`}
+        ></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="section-padding bg-ink-950 text-center">
+    <div class="container-narrow">
+      <h2 class="text-3xl sm:text-4xl">¿Tenés hambre?</h2>
+      <p class="mt-3 text-cream-100/80">Escribinos por WhatsApp y armamos tu pedido al toque.</p>
+      <a href={business.whatsappHref} target="_blank" rel="noopener noreferrer" class="btn-primary mt-6">
+        Pedí por WhatsApp
+      </a>
+    </div>
+  </section>
+</BaseLayout>

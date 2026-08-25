@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { business } from '../lib/business';
+---
+
+<BaseLayout title={`Página no encontrada — ${business.name}`} robots="noindex, nofollow">
+  <section class="section-padding text-center">
+    <div class="container-narrow">
+      <p class="font-script text-3xl text-sauce-400">Ups...</p>
+      <h1 class="mt-2 text-4xl sm:text-5xl">Página no encontrada</h1>
+      <p class="mt-4 text-cream-100/80">
+        La página que buscás no existe o fue movida. Volvé al inicio o escribinos por WhatsApp para hacer tu pedido.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href="/" class="btn-primary">Volver al inicio</a>
+        <a href={business.whatsappHref} target="_blank" rel="noopener noreferrer" class="btn-outline">
+          Pedí por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

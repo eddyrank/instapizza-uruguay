@@ -1,0 +1,31 @@
+---
+interface PriceEntry {
+  label?: string;
+  value: number | null;
+}
+
+interface Props {
+  name: string;
+  description?: string;
+  prices: PriceEntry[];
+}
+
+const { name, description, prices } = Astro.props;
+---
+
+<div class="flex flex-col gap-3 border-b border-ink-700 py-4 last:border-0 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+  <div class="sm:max-w-md">
+    <h3 class="font-sans text-base font-bold normal-case tracking-normal text-cream-50">{name}</h3>
+    {description && <p class="mt-1 text-sm text-cream-100/70">{description}</p>}
+  </div>
+  <div class="flex shrink-0 gap-4 sm:flex-col sm:items-end sm:gap-1">
+    {
+      prices.map((p) => (
+        <div class="flex items-baseline gap-2 sm:justify-end">
+          {p.label && <span class="text-xs uppercase tracking-wide text-cream-100/60">{p.label}</span>}
+          <span class="price-tag text-lg">{p.value !== null ? `$${p.value}` : 'Consultar'}</span>
+        </div>
+      ))
+    }
+  </div>
+</div>

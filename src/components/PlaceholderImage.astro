@@ -1,0 +1,17 @@
+---
+// Reusable placeholder block for real photos not yet supplied.
+// Swap the parent usage for a real <img> once the asset exists in /public/images.
+interface Props {
+  label: string;
+  aspect?: string; // Tailwind aspect-ratio class, e.g. "aspect-square"
+  class?: string;
+}
+
+const { label, aspect = 'aspect-[4/3]', class: className = '' } = Astro.props;
+---
+
+<div
+  class={`flex ${aspect} items-center justify-center rounded-xl border-2 border-dashed border-ink-600 bg-ink-900 px-4 text-center text-sm text-cream-100/50 ${className}`}
+>
+  {label}
+</div>

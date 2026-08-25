@@ -1,0 +1,95 @@
+---
+import { business } from '../lib/business';
+
+const navLinks = [
+  { label: 'Menú', href: '#menu' },
+  { label: 'Nosotros', href: '#nosotros' },
+  { label: 'Galería', href: '#galeria' },
+  { label: 'Ubicación', href: '#ubicacion' },
+];
+---
+
+<header class="sticky top-0 z-50 border-b border-ink-700 bg-ink-950/95 backdrop-blur">
+  <div class="container-wide flex items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+    <a href="#main-content" class="flex items-center gap-2" aria-label={`${business.name} — inicio`}>
+      <!--
+        PLACEHOLDER: swap for the real logo file once provided, e.g.
+        <img src="/images/logo.png" alt={business.name} width="44" height="44" loading="eager" fetchpriority="high" />
+      -->
+      <span
+        class="flex h-11 w-11 items-center justify-center rounded-full border-2 border-gold-500 bg-ink-900 font-display text-lg text-gold-400"
+        aria-hidden="true"
+      >
+        IP
+      </span>
+      <span class="font-display text-xl leading-none text-cream-50 sm:text-2xl">
+        Insta<span class="text-gold-400">pizza</span>
+      </span>
+    </a>
+
+    <nav aria-label="Navegación principal" class="hidden items-center gap-8 md:flex">
+      {
+        navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="text-sm font-semibold uppercase tracking-wide text-cream-100/90 transition hover:text-gold-400"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="hidden md:block">
+      <a href={business.whatsappHref} class="btn-primary" target="_blank" rel="noopener noreferrer">
+        <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 fill-current">
+          <path
+            d="M12.04 2c-5.52 0-10 4.48-10 10 0 1.77.46 3.45 1.27 4.9L2 22l5.25-1.38a9.94 9.94 0 0 0 4.79 1.22h.01c5.52 0 10-4.48 10-10s-4.48-10-10-10zm5.8 14.3c-.24.68-1.4 1.3-1.93 1.38-.5.08-1.13.11-1.82-.11-.42-.13-.96-.31-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.19-1.58-1.19-3.02 0-1.44.75-2.14 1.02-2.44.27-.29.58-.36.78-.36.2 0 .39 0 .56.01.18.01.42-.07.65.5.24.58.82 2 .89 2.15.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.18-.31.4-.44.53-.15.15-.3.31-.13.6.17.29.75 1.25 1.62 2.02 1.11.99 2.05 1.3 2.34 1.45.29.15.46.13.63-.08.17-.2.72-.85.92-1.14.2-.29.39-.24.65-.14.27.1 1.7.81 1.99.96.29.15.48.22.55.34.07.13.07.75-.17 1.43z"
+          />
+        </svg>
+        Pedí por WhatsApp
+      </a>
+    </div>
+
+    <button
+      id="mobile-menu-toggle"
+      type="button"
+      class="flex h-11 w-11 items-center justify-center rounded-md border border-ink-600 text-cream-50 md:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Abrir menú de navegación"
+    >
+      <svg aria-hidden="true" viewBox="0 0 24 24" class="h-6 w-6 stroke-current" fill="none" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+
+  <div id="mobile-menu" class="hidden border-t border-ink-700 bg-ink-950 md:hidden">
+    <nav aria-label="Navegación móvil" class="flex flex-col gap-1 px-4 py-4">
+      {
+        navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="rounded-md px-3 py-3 text-base font-semibold uppercase tracking-wide text-cream-100 transition hover:bg-ink-800 hover:text-gold-400"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+      <a href={business.whatsappHref} class="btn-primary mt-2 w-full" target="_blank" rel="noopener noreferrer">
+        Pedí por WhatsApp
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('mobile-menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  toggle?.addEventListener('click', () => {
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!expanded));
+    menu?.classList.toggle('hidden');
+  });
+</script>
