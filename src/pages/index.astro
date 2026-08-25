@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import PlaceholderImage from '../components/PlaceholderImage.astro';
 import MenuRow from '../components/MenuRow.astro';
 import InfoCard from '../components/InfoCard.astro';
 import { business } from '../lib/business';
@@ -17,6 +16,15 @@ import {
 } from '../lib/menu';
 
 const todayHours = business.hours[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
+
+const gallery = [
+  { src: '/images/gallery-pizza-langostinos.jpg', alt: 'Pizza de langostinos de Instapizza en su caja', width: 1200, height: 800 },
+  { src: '/images/gallery-burger.jpg', alt: 'Burger de Instapizza con panceta, cheddar y cebolla', width: 1200, height: 800 },
+  { src: '/images/gallery-sandwich-artesanal.jpg', alt: 'Sandwich artesanal de Instapizza en pan casero', width: 960, height: 1200 },
+  { src: '/images/gallery-sandwich-lomo.jpg', alt: 'Sandwich de lomo de Instapizza con queso derretido', width: 960, height: 1200 },
+  { src: '/images/gallery-pizza-porcion.jpg', alt: 'Porción de pizza de Instapizza servida desde la caja', width: 800, height: 1200 },
+  { src: '/images/gallery-sandwich-pita.jpg', alt: 'Sandwich en pan pita de Instapizza con aceitunas y morrón', width: 675, height: 1200 },
+] as const;
 ---
 
 <BaseLayout
@@ -52,11 +60,17 @@ const todayHours = business.hours[new Date().getDay() === 0 ? 6 : new Date().get
           <span>{business.address.city}, {business.address.region}</span>
         </div>
       </div>
-      <PlaceholderImage
-        label="Foto real: pizza / caja Instapizza — reemplazar con imagen del cliente"
-        aspect="aspect-[4/3]"
-        class="lg:aspect-square"
-      />
+      <div class="overflow-hidden rounded-xl border border-ink-700">
+        <img
+          src="/images/pizza-jamon-cheddar-instapizza.jpg"
+          alt="Pizza de jamón y cheddar de Instapizza recién cortada, con las cajas de delivery de fondo"
+          width="1800"
+          height="1200"
+          loading="eager"
+          fetchpriority="high"
+          class="aspect-[4/3] h-full w-full object-cover lg:aspect-square"
+        />
+      </div>
     </div>
   </section>
 
@@ -172,7 +186,17 @@ const todayHours = business.hours[new Date().getDay() === 0 ? 6 : new Date().get
       <div class="mt-16">
         <h3 class="text-2xl">Sandwiches</h3>
         <div class="mt-6 grid gap-8 lg:grid-cols-2 lg:items-center">
-          <PlaceholderImage label="Foto real: Tortugón de Carne Picada — reemplazar con imagen del cliente" />
+          <div class="overflow-hidden rounded-xl border border-ink-700">
+            <img
+              src="/images/tortugon-carne-picada.jpg"
+              alt="Tortugón de Carne Picada de Instapizza, sandwich doble con huevo, jamón y muzzarella"
+              width="1800"
+              height="965"
+              loading="lazy"
+              decoding="async"
+              class="aspect-[4/3] h-full w-full object-cover"
+            />
+          </div>
           <div class="rounded-xl border border-gold-600/40 bg-ink-900 p-6">
             <h4 class="font-display text-xl normal-case tracking-normal text-cream-50">{tortugon.name}</h4>
             <p class="mt-2 text-sm text-cream-100/70">{tortugon.description}</p>
@@ -222,7 +246,17 @@ const todayHours = business.hours[new Date().getDay() === 0 ? 6 : new Date().get
   <!-- About -->
   <section id="nosotros" class="border-t border-ink-700 bg-ink-900 section-padding">
     <div class="container-wide grid gap-10 lg:grid-cols-2 lg:items-center">
-      <PlaceholderImage label="Foto real: equipo / local Instapizza — reemplazar con imagen del cliente" />
+      <div class="overflow-hidden rounded-xl border border-ink-700">
+        <img
+          src="/images/sandwich-instapizza-especial.jpg"
+          alt="Sandwich especial de Instapizza recién armado, con panceta, queso derretido y morrón"
+          width="1440"
+          height="1800"
+          loading="lazy"
+          decoding="async"
+          class="aspect-[4/3] h-full w-full object-cover lg:aspect-square"
+        />
+      </div>
       <div>
         <SectionHeading eyebrow="Nosotros" title="Sabor casero, entregado rápido" align="left" />
         <p class="mt-5 text-cream-100/80">
@@ -245,15 +279,22 @@ const todayHours = business.hours[new Date().getDay() === 0 ? 6 : new Date().get
   <section id="galeria" class="section-padding">
     <div class="container-wide">
       <SectionHeading eyebrow="Galería" title="Lo que sale de nuestra cocina" />
-      <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        <PlaceholderImage label="Foto: pizza de langostinos" aspect="aspect-square" />
-        <PlaceholderImage label="Foto: pizza jamón y cheddar" aspect="aspect-square" />
-        <PlaceholderImage label="Foto: burger" aspect="aspect-square" />
-        <PlaceholderImage label="Foto: sandwich de lomo" aspect="aspect-square" />
-        <PlaceholderImage label="Foto: Friendly Box" aspect="aspect-square" />
-        <PlaceholderImage label="Foto: milanesa napolitana" aspect="aspect-square" />
-        <PlaceholderImage label="Foto: chivito" aspect="aspect-square" />
-        <PlaceholderImage label="Foto: local / cocina" aspect="aspect-square" />
+      <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
+        {
+          gallery.map((photo) => (
+            <div class="aspect-square overflow-hidden rounded-xl border border-ink-700">
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                width={photo.width}
+                height={photo.height}
+                loading="lazy"
+                decoding="async"
+                class="h-full w-full object-cover transition duration-300 hover:scale-105"
+              />
+            </div>
+          ))
+        }
       </div>
     </div>
   </section>

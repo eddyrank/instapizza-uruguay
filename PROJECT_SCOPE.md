@@ -45,7 +45,6 @@ anchor-linked from the header/footer nav (`#menu`, `#nosotros`, `#galeria`, `#ub
 | SectionHeading | `src/components/SectionHeading.astro` | Eyebrow + title + subtitle pattern reused per section |
 | MenuRow | `src/components/MenuRow.astro` | Name/description/price row, supports single or dual (chivito 1x/2x) pricing |
 | InfoCard | `src/components/InfoCard.astro` | Stat tile used in the "at a glance" grid |
-| PlaceholderImage | `src/components/PlaceholderImage.astro` | Dashed-border placeholder for real photos not yet supplied |
 
 ## 5. Layout
 
@@ -85,26 +84,34 @@ anchor-linked from the header/footer nav (`#menu`, `#nosotros`, `#galeria`, `#ub
 - Confirm the client is happy with "Consultar" wording, or provide the price to replace it.
 - Optional: an email address, if the client wants one listed (currently blank in `business.ts`).
 
-## 9. Photo assets needed
+## 9. Photo assets — done
 
-Every real photo slot is currently a labeled dashed-border placeholder — **swap these for the actual
-files once available** (client confirmed real photos should be used; waiting on the local folder path):
+Real client photos (from `~/Downloads/Instapizza pictures`) are wired in at `public/images/`, resized
+for web (long edge capped at 1800px for feature shots / 1200px for gallery, JPEG):
 
-- Hero: pizza / Instapizza box shot
-- Sandwiches: Tortugón de Carne Picada
-- About: team / kitchen / storefront photo
-- Gallery (8 slots): shrimp pizza, ham & cheddar pizza, burger, steak sandwich, Friendly Box, milanesa
-  napolitana, chivito, kitchen/local
-- Logo: header currently uses a text-based "IP" mark as a stand-in for the real logo
-- Open Graph share image: referenced at `/images/og-cover.jpg` in `schema.ts` / `BaseLayout.astro` —
-  needs a real 1200×630 image before launch or social shares will show a broken image
+| Site location | File | Source |
+|---|---|---|
+| Header / footer logo, favicon, apple-touch-icon | `logo.jpg` | client logo (also cropped to `favicon-32.png`, `apple-touch-icon.png`) |
+| Hero | `pizza-jamon-cheddar-instapizza.jpg` | pizza + cutter shot, branded boxes visible |
+| OG share image | `og-cover.jpg` | 1200×630 crop of the hero photo |
+| Sandwiches / Tortugón feature | `tortugon-carne-picada.jpg` | double-decker sandwich, matches the Tortugón description |
+| About | `sandwich-instapizza-especial.jpg` | branded sandwich close-up |
+| Gallery (6) | `gallery-pizza-langostinos.jpg`, `gallery-burger.jpg`, `gallery-sandwich-artesanal.jpg`, `gallery-sandwich-lomo.jpg`, `gallery-pizza-porcion.jpg`, `gallery-sandwich-pita.jpg` | remaining clean product shots |
+
+**Two images from that folder were excluded on purpose**: a "GARAMOND" type-specimen screenshot and an
+"OURA & CO." furniture-site screenshot. Neither is Instapizza content — they look like unrelated design
+references that ended up in the same folder — so nothing was published from them. Flag to the client if
+that folder wasn't meant to include those.
+
+**Also excluded**: the five Instagram-style promo flyers (Friendly Box, Milanesa Napolitana, Tortugón,
+Muzza/Gustos, the full chivito+burger+milanesa "MENU" poster). They're well-designed, but each already
+has prices baked into the image as text — using them as photography on the page would duplicate (and
+risk drifting out of sync with) the live prices already typeset from `menu.ts`. The raw product photos
+were used instead so every price on the page has exactly one source of truth. The flyers themselves are
+still great as-is for Instagram/WhatsApp status posts — just not embedded in the site.
 
 ## 10. Integrations to configure
 
-- **Real photos** — once supplied, drop into `public/images/` and swap each `PlaceholderImage` usage
-  for a real `<img>` (descriptive filenames, explicit `width`/`height`, `loading="lazy"` below the fold,
-  `loading="eager" fetchpriority="high"` on the hero image only)
-- **Real logo** — replace the text "IP" mark in `Header.astro` with `<img src="/images/logo.png" ...>`
 - **Domain** — `astro.config.mjs` `site`, `business.ts` `url`, `public/robots.txt`, and `schema.ts`'s
   `image`/`menu` URLs all currently point at the placeholder `https://instapizza-uruguay.pages.dev`;
   update all four once the real Cloudflare Pages URL (or custom domain) is confirmed
@@ -140,14 +147,20 @@ InstaPizza Uruguay Gonzalo/
 ├── tsconfig.json
 ├── public/
 │   ├── favicon.svg
-│   └── robots.txt
+│   ├── robots.txt
+│   └── images/
+│       ├── logo.jpg, favicon-32.png, apple-touch-icon.png
+│       ├── og-cover.jpg
+│       ├── pizza-jamon-cheddar-instapizza.jpg
+│       ├── tortugon-carne-picada.jpg
+│       ├── sandwich-instapizza-especial.jpg
+│       └── gallery-*.jpg (6 files)
 └── src/
     ├── components/
     │   ├── Footer.astro
     │   ├── Header.astro
     │   ├── InfoCard.astro
     │   ├── MenuRow.astro
-    │   ├── PlaceholderImage.astro
     │   └── SectionHeading.astro
     ├── layouts/
     │   └── BaseLayout.astro
