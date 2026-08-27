@@ -95,11 +95,25 @@ All logic lives in `src/scripts/cart.ts` (vanilla TS, no framework, ~1.8KB gzipp
 `data-item-id` / `data-item-name` / `data-item-price` attributes on the stepper markup — so the cart never
 needs its own copy of menu data and can't drift out of sync with `menu.ts`.
 
-**Known limitation, by design:** pizza topping combinations (comunes/especiales/premium) aren't individually
-orderable — the pricing depends on how many toppings of each tier are chosen, which doesn't reduce to a flat
-per-item price. The Muzza base pizza is orderable as a single line item, and there's a hint next to it telling
-customers to note their topping choices in the "Notas" field. If the client wants full topping selection, that
-would need a small pricing-rules engine — flag if that's wanted and it can be scoped separately.
+**Pizza topping builder:** the Muzza base pizza has its own customizer (`src/scripts/pizza-builder.ts`,
+wired to the `#pizza-builder` block in `index.astro`'s Pizzas section) instead of a plain stepper. Toppings
+across Comunes (+$50), Especiales (+$60), and Premium (+$80) render as checkbox chips; checking any of them
+recomputes a live price (base + sum of checked toppings) and, on "Agregar al pedido", composes a cart entry
+with an id/name generated from the sorted topping selection (e.g. `pizza-muzza-jamon-roquefort`) — so two
+different topping combos become two separate cart lines, while adding the *same* combo twice (from this
+builder or reordering) correctly accumulates quantity. Selecting no toppings falls back to the plain
+`pizza-muzza` id, which is the same id the quick "Más pedidos" stepper uses — confirmed in sync (adding from
+either place updates the other).
+
+The chip's checked-state highlight (gold border/background) is applied via `!important`-flagged Tailwind
+classes toggled in `pizza-builder.ts`, rather than the more idiomatic `has-[:checked]` variant. Both were
+verified correct in the generated CSS (confirmed via direct stylesheet/CSSOM inspection — the `:has()` rule
+was the only one matching, with higher specificity, and should have applied by spec) but neither showed the
+visual change through this session's browser-automation tool, which had unrelated rendering-pipeline
+flakiness the whole session (recurring blank screenshots unconnected to any of these changes). Functional
+behavior (price math, cart sync, WhatsApp message contents) was verified directly via cart/localStorage
+state and confirmed correct. Worth a quick visual spot-check on the deployed site to close the loop, though
+there's no code-level reason to expect it not to render as designed.
 
 The "Al plato" milanesa (no listed price) intentionally has no stepper — nothing to add at an unknown price.
 

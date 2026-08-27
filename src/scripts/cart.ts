@@ -290,3 +290,14 @@ if (notesEl) {
 }
 
 renderAll();
+
+// Public hook for one-off "add N of this composed item" actions that don't
+// use the plain [data-item-id] stepper markup — e.g. the pizza topping
+// builder, where the id/name/price are computed from a checkbox selection
+// at add-time rather than known statically in the markup.
+declare global {
+  interface Window {
+    instapizzaCartAdd?: (id: string, qty: number, name: string, price: number) => void;
+  }
+}
+window.instapizzaCartAdd = (id, qty, name, price) => changeQty(id, qty, name, price);

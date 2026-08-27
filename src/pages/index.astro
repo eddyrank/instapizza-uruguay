@@ -125,7 +125,7 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
             height="1200"
             loading="lazy"
             decoding="async"
-            class="aspect-[4/3] w-full object-cover object-top"
+            class="block h-auto w-full"
           />
           <div class="p-6">
             <p class="text-sm font-semibold uppercase tracking-wide text-sauce-400">Plato completo</p>
@@ -150,7 +150,7 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
             height="1200"
             loading="lazy"
             decoding="async"
-            class="aspect-[4/3] w-full object-cover object-top"
+            class="block h-auto w-full"
           />
             <div class="p-6">
               <p class="text-sm font-semibold uppercase tracking-wide text-gold-400">Para compartir</p>
@@ -239,15 +239,41 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
           />
           <h3 class="text-2xl">Pizzas</h3>
         </div>
-        <div class="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+        <div
+          id="pizza-builder"
+          class="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]"
+          data-base-price={pizzas.base.price}
+          data-base-name={`Pizza ${pizzas.base.name} (${pizzas.base.size})`}
+        >
           <div class="rounded-xl border border-gold-600/40 bg-ink-900 p-6">
             <p class="font-script text-2xl text-sauce-400">Muzza</p>
             <p class="mt-1 text-sm text-cream-100/70">{pizzas.base.size}</p>
-            <p class="mt-3 price-tag text-4xl">${pizzas.base.price}</p>
-            <div class="mt-3">
-              <OrderStepper id="pizza-muzza" name={`Pizza ${pizzas.base.name} (${pizzas.base.size})`} price={pizzas.base.price} />
+            <p class="mt-3 price-tag text-4xl" id="pizza-builder-price">${pizzas.base.price}</p>
+            <p class="mt-1 text-xs text-cream-100/50">Elegí los gustos que quieras a la derecha.</p>
+
+            <div class="mt-5 flex items-center justify-between gap-4 border-t border-ink-700 pt-5">
+              <div class="flex items-center gap-2">
+                <button
+                  type="button"
+                  data-pizza-qty="decrease"
+                  aria-label="Restar pizza"
+                  class="flex h-12 w-12 items-center justify-center rounded-md border border-ink-600 text-lg leading-none text-cream-100 transition hover:border-gold-500 hover:text-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-300"
+                >
+                  <span aria-hidden="true">−</span>
+                </button>
+                <span class="w-6 text-center text-sm font-bold tabular-nums" id="pizza-builder-qty">1</span>
+                <button
+                  type="button"
+                  data-pizza-qty="increase"
+                  aria-label="Sumar pizza"
+                  class="flex h-12 w-12 items-center justify-center rounded-md border border-gold-600 text-lg leading-none text-gold-400 transition hover:bg-gold-500 hover:text-ink-950 focus:outline-none focus:ring-2 focus:ring-gold-300"
+                >
+                  <span aria-hidden="true">+</span>
+                </button>
+              </div>
+              <button type="button" id="pizza-builder-add" class="btn-primary">Agregar al pedido</button>
             </div>
-            <p class="mt-2 text-xs text-cream-100/50">Anotá los gustos que quieras agregar en las notas del pedido.</p>
+
             <p class="mt-6 text-sm font-semibold uppercase tracking-wide text-gold-400">Recomendadas</p>
             <ul class="mt-2 flex flex-wrap gap-2">
               {
@@ -261,27 +287,67 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
             <div class="rounded-xl border border-ink-700 bg-ink-900 p-5">
               <p class="text-sm font-semibold uppercase tracking-wide text-cream-100/60">{pizzas.common.label}</p>
               <p class="price-tag mt-1 text-2xl">+${pizzas.common.price}</p>
-              <ul class="mt-3 space-y-1 text-sm text-cream-100/80">
-                {pizzas.common.items.map((i) => <li>{i}</li>)}
-              </ul>
+              <div class="mt-3 space-y-2">
+                {
+                  pizzas.common.items.map((i) => (
+                    <label class="topping-chip flex cursor-pointer items-center justify-between gap-2 rounded-lg border border-ink-700 bg-ink-950 px-3 py-2 text-sm text-cream-100/80 transition">
+                      <span>{i}</span>
+                      <input
+                        type="checkbox"
+                        class="pizza-topping h-4 w-4 shrink-0 accent-gold-500"
+                        data-topping-name={i}
+                        data-topping-price={pizzas.common.price}
+                      />
+                    </label>
+                  ))
+                }
+              </div>
             </div>
             <div class="rounded-xl border border-ink-700 bg-ink-900 p-5">
               <p class="text-sm font-semibold uppercase tracking-wide text-cream-100/60">{pizzas.special.label}</p>
               <p class="price-tag mt-1 text-2xl">+${pizzas.special.price}</p>
-              <ul class="mt-3 space-y-1 text-sm text-cream-100/80">
-                {pizzas.special.items.map((i) => <li>{i}</li>)}
-              </ul>
+              <div class="mt-3 space-y-2">
+                {
+                  pizzas.special.items.map((i) => (
+                    <label class="topping-chip flex cursor-pointer items-center justify-between gap-2 rounded-lg border border-ink-700 bg-ink-950 px-3 py-2 text-sm text-cream-100/80 transition">
+                      <span>{i}</span>
+                      <input
+                        type="checkbox"
+                        class="pizza-topping h-4 w-4 shrink-0 accent-gold-500"
+                        data-topping-name={i}
+                        data-topping-price={pizzas.special.price}
+                      />
+                    </label>
+                  ))
+                }
+              </div>
             </div>
             <div class="rounded-xl border border-sauce-600/50 bg-ink-900 p-5">
               <p class="text-sm font-semibold uppercase tracking-wide text-cream-100/60">{pizzas.premium.label}</p>
               <p class="price-tag mt-1 text-2xl">+${pizzas.premium.price}</p>
-              <ul class="mt-3 space-y-1 text-sm text-cream-100/80">
-                {pizzas.premium.items.map((i) => <li>{i}</li>)}
-              </ul>
+              <div class="mt-3 space-y-2">
+                {
+                  pizzas.premium.items.map((i) => (
+                    <label class="topping-chip flex cursor-pointer items-center justify-between gap-2 rounded-lg border border-ink-700 bg-ink-950 px-3 py-2 text-sm text-cream-100/80 transition">
+                      <span>{i}</span>
+                      <input
+                        type="checkbox"
+                        class="pizza-topping h-4 w-4 shrink-0 accent-gold-500"
+                        data-topping-name={i}
+                        data-topping-price={pizzas.premium.price}
+                      />
+                    </label>
+                  ))
+                }
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <script>
+        import '../scripts/pizza-builder.ts';
+      </script>
 
       <!-- Burgers -->
       <div class="mt-16">

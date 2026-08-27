@@ -1,5 +1,9 @@
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}'],
+  // Classes toggled purely via JS (pizza-builder.ts topping chip checked
+  // state) rather than appearing as a literal string in markup, so the
+  // content scanner would otherwise miss generating them.
+  safelist: ['!border-gold-500', '!bg-gold-500/10', '!text-gold-300'],
   theme: {
     extend: {
       colors: {
