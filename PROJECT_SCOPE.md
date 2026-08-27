@@ -39,8 +39,7 @@ naming follow a structure the client specified directly:
 1. **Hero** (`#main-content`) — name, one-line tagline, single "Hacer pedido" CTA scrolling to `#menu`
 2. **Promos** (`#promos`) — Tortugón + Coca super promo, Milanesa Napolitana plato, Friendly Box combos
 3. **Más pedidos** (no anchor — sits between Promos and Menú) — see the caveat in section 8
-4. **Menú completo** (`#menu`) — Pizzas, Burgers, Chivitos, Milanesas, Sandwiches, Combos, plus
-   Papas/Bebidas/Postres as "coming soon" cards (no fabricated items/prices — see section 8)
+4. **Menú completo** (`#menu`) — Pizzas, Burgers, Chivitos, Milanesas, Sandwiches, Combos
 5. **Delivery** (`#delivery`) — zonas/costo/horarios/tiempo estimado; only horarios is real data today
 6. **Por qué Instapizza** (`#por-que-instapizza`) — 4 value-prop cards + photo
 7. **Reseñas** (`#resenas`) — real Google rating + the one real review quote from the GBP listing
@@ -157,11 +156,11 @@ than a fabricated number, so the site is truthful right now, just incomplete in 
   near the top of `src/pages/index.astro` (search for the `pizzachiviData` / `boomData` /
   `napolitanaAlPanData` block) — there's also a visible disclaimer note under the section heading that
   should come out once the list is real.
-- **Papas, Bebidas, Postres** — no items or prices exist anywhere in the source material (flyers, GBP
-  listing) for these three categories the client asked for in the Menú. They render as "coming soon"
-  cards (`comingSoonCategories` in `menu.ts`) rather than invented products. Once the client provides
-  real items, add them to `menu.ts` following the same shape as `burgers` or `milanesas`, wire them into
-  a new `<MenuRow>` block in `index.astro`, and remove that category from `comingSoonCategories`.
+- **Papas, Bebidas, Postres** — the client originally asked for these three categories, but no items or
+  prices exist anywhere in the source material (flyers, GBP listing). The "coming soon" placeholder cards
+  that stood in for them were removed as repetitive per the client's request — the categories aren't in the
+  menu at all right now. Once real items/prices are provided, add them to `menu.ts` (same shape as `burgers`
+  or `milanesas`) and wire in a new `<MenuRow>` block for each in the Menú section of `index.astro`.
 - **Milanesa "Al plato" price** — the source flyer shows this item without a visible price; shows
   "Consultar" instead of a fabricated number.
 - Optional: an email address, if the client wants one listed (currently blank in `business.ts`).

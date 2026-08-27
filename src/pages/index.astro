@@ -14,7 +14,6 @@ import {
   milanesas,
   tortugon,
   friendlyBox,
-  comingSoonCategories,
 } from '../lib/menu';
 import { slugify } from '../lib/slug';
 
@@ -509,18 +508,6 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
             }
           </div>
         </div>
-      </div>
-
-      <!-- Coming soon categories -->
-      <div class="mt-16 grid gap-4 sm:grid-cols-3">
-        {
-          comingSoonCategories.map((label) => (
-            <div class="rounded-xl border border-dashed border-ink-600 bg-ink-900/50 p-5 text-center">
-              <h3 class="text-lg">{label}</h3>
-              <p class="mt-2 text-xs text-cream-100/50">Muy pronto vas a poder pedir {label.toLowerCase()} por acá.</p>
-            </div>
-          ))
-        }
       </div>
     </div>
   </section>
