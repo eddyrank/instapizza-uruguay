@@ -3,8 +3,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import MenuRow from '../components/MenuRow.astro';
 import InfoCard from '../components/InfoCard.astro';
+import OrderStepper from '../components/OrderStepper.astro';
 import { business } from '../lib/business';
 import { restaurantSchema, websiteSchema } from '../lib/schema';
+import { slugify } from '../lib/slug';
 import {
   pizzas,
   burgers,
@@ -99,6 +101,10 @@ const gallery = [
             <p class="font-script text-2xl text-sauce-400">Muzza</p>
             <p class="mt-1 text-sm text-cream-100/70">{pizzas.base.size}</p>
             <p class="mt-3 price-tag text-4xl">${pizzas.base.price}</p>
+            <div class="mt-3">
+              <OrderStepper id="pizza-muzza" name={`Pizza ${pizzas.base.name} (${pizzas.base.size})`} price={pizzas.base.price} />
+            </div>
+            <p class="mt-2 text-xs text-cream-100/50">Anotá los gustos que quieras agregar en las notas del pedido.</p>
             <p class="mt-6 text-sm font-semibold uppercase tracking-wide text-gold-400">Recomendadas</p>
             <ul class="mt-2 flex flex-wrap gap-2">
               {
@@ -138,7 +144,11 @@ const gallery = [
       <div class="mt-16">
         <h3 class="text-2xl">Burgers</h3>
         <div class="mt-6 grid gap-x-10 sm:grid-cols-2">
-          {burgers.map((b) => <MenuRow name={b.name} description={b.description} prices={[{ value: b.price }]} />)}
+          {
+            burgers.map((b) => (
+              <MenuRow id={`burger-${slugify(b.name)}`} name={b.name} description={b.description} prices={[{ value: b.price }]} />
+            ))
+          }
         </div>
       </div>
 
@@ -150,6 +160,7 @@ const gallery = [
           {
             chivitos.map((c) => (
               <MenuRow
+                id={`chivito-${slugify(c.name)}`}
                 name={c.name}
                 description={c.description}
                 prices={[
@@ -169,6 +180,7 @@ const gallery = [
           <div>
             <div class="rounded-xl border border-sauce-600/50 bg-ink-900 p-5">
               <MenuRow
+                id="milanesa-napolitana-plato"
                 name={milanesaNapolitanaPlato.name}
                 description={milanesaNapolitanaPlato.description}
                 prices={[{ value: milanesaNapolitanaPlato.price }]}
@@ -177,7 +189,11 @@ const gallery = [
             <p class="mt-3 text-xs uppercase tracking-wide text-cream-100/50">Plato — con ensalada mixta y papas fritas</p>
           </div>
           <div>
-            {milanesas.map((m) => <MenuRow name={m.name} description={m.description} prices={[{ value: m.price }]} />)}
+            {
+              milanesas.map((m) => (
+                <MenuRow id={`milanesa-${slugify(m.name)}`} name={m.name} description={m.description} prices={[{ value: m.price }]} />
+              ))
+            }
           </div>
         </div>
       </div>
@@ -204,14 +220,23 @@ const gallery = [
               <div>
                 <p class="text-xs uppercase tracking-wide text-cream-100/60">Sin fritas</p>
                 <p class="price-tag text-2xl">${tortugon.sinFritas}</p>
+                <div class="mt-2">
+                  <OrderStepper id="tortugon-sin-fritas" name={`${tortugon.name} (sin fritas)`} price={tortugon.sinFritas} />
+                </div>
               </div>
               <div>
                 <p class="text-xs uppercase tracking-wide text-cream-100/60">Con fritas</p>
                 <p class="price-tag text-2xl">${tortugon.conFritas}</p>
+                <div class="mt-2">
+                  <OrderStepper id="tortugon-con-fritas" name={`${tortugon.name} (con fritas)`} price={tortugon.conFritas} />
+                </div>
               </div>
               <div class="rounded-lg border border-sauce-500 px-4 py-2">
                 <p class="text-xs uppercase tracking-wide text-sauce-400">Super promo + Coca 1.5L</p>
                 <p class="price-tag text-2xl">${tortugon.promoConCoca}</p>
+                <div class="mt-2">
+                  <OrderStepper id="tortugon-promo-coca" name={`${tortugon.name} + Coca 1.5L`} price={tortugon.promoConCoca} />
+                </div>
               </div>
             </div>
           </div>
@@ -234,6 +259,9 @@ const gallery = [
                 <div class="rounded-lg border border-ink-700 bg-ink-950 p-4 text-center">
                   <p class="text-sm font-semibold uppercase tracking-wide text-cream-100/70">{o.name}</p>
                   <p class="price-tag mt-1 text-3xl">${o.price}</p>
+                  <div class="mt-3 flex justify-center">
+                    <OrderStepper id={`combo-${slugify(o.name)}`} name={`${friendlyBox.name} ${o.name}`} price={o.price} />
+                  </div>
                 </div>
               ))
             }

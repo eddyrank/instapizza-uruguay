@@ -1,0 +1,34 @@
+---
+// Quantity stepper for one orderable line item. Purely presentational —
+// src/scripts/cart.ts reads the data-item-* attributes and drives the
+// qty display via the [data-role="qty"] span. No price is ever computed
+// or sent anywhere except into the WhatsApp message text the customer
+// reviews before sending.
+interface Props {
+  id: string;
+  name: string;
+  price: number;
+}
+
+const { id, name, price } = Astro.props;
+---
+
+<div class="order-stepper flex items-center gap-2" data-item-id={id} data-item-name={name} data-item-price={price}>
+  <button
+    type="button"
+    data-action="decrease"
+    aria-label={`Quitar ${name} del pedido`}
+    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-ink-600 text-lg leading-none text-cream-100 transition hover:border-gold-500 hover:text-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-300"
+  >
+    <span aria-hidden="true">−</span>
+  </button>
+  <span class="w-6 text-center text-sm font-bold tabular-nums" data-role="qty">0</span>
+  <button
+    type="button"
+    data-action="increase"
+    aria-label={`Agregar ${name} al pedido`}
+    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-gold-600 text-lg leading-none text-gold-400 transition hover:bg-gold-500 hover:text-ink-950 focus:outline-none focus:ring-2 focus:ring-gold-300"
+  >
+    <span aria-hidden="true">+</span>
+  </button>
+</div>

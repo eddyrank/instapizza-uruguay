@@ -1,5 +1,6 @@
 ---
 import { business } from '../lib/business';
+import CartButton from './CartButton.astro';
 
 const navLinks = [
   { label: 'Menú', href: '#menu' },
@@ -41,7 +42,8 @@ const navLinks = [
       }
     </nav>
 
-    <div class="hidden md:block">
+    <div class="hidden items-center gap-3 md:flex">
+      <CartButton variant="icon" />
       <a href={business.whatsappHref} class="btn-primary" target="_blank" rel="noopener noreferrer">
         <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 fill-current">
           <path
@@ -52,18 +54,21 @@ const navLinks = [
       </a>
     </div>
 
-    <button
-      id="mobile-menu-toggle"
-      type="button"
-      class="flex h-11 w-11 items-center justify-center rounded-md border border-ink-600 text-cream-50 md:hidden"
-      aria-expanded="false"
-      aria-controls="mobile-menu"
-      aria-label="Abrir menú de navegación"
-    >
-      <svg aria-hidden="true" viewBox="0 0 24 24" class="h-6 w-6 stroke-current" fill="none" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </button>
+    <div class="flex items-center gap-2 md:hidden">
+      <CartButton variant="icon" />
+      <button
+        id="mobile-menu-toggle"
+        type="button"
+        class="flex h-11 w-11 items-center justify-center rounded-md border border-ink-600 text-cream-50"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Abrir menú de navegación"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24" class="h-6 w-6 stroke-current" fill="none" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
   </div>
 
   <div id="mobile-menu" class="hidden border-t border-ink-700 bg-ink-950 md:hidden">
@@ -78,6 +83,7 @@ const navLinks = [
           </a>
         ))
       }
+      <CartButton variant="full" />
       <a href={business.whatsappHref} class="btn-primary mt-2 w-full" target="_blank" rel="noopener noreferrer">
         Pedí por WhatsApp
       </a>

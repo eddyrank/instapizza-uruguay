@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CartDrawer from '../components/CartDrawer.astro';
 import { business } from '../lib/business';
 import '../styles/global.css';
 
@@ -70,5 +71,6 @@ const schemaList = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
     <Header />
     <main id="main-content" class="flex-1"><slot /></main>
     <Footer />
+    <CartDrawer />
   </body>
 </html>

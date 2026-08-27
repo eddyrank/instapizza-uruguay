@@ -43,20 +43,49 @@ anchor-linked from the header/footer nav (`#menu`, `#nosotros`, `#galeria`, `#ub
 | Header | `src/components/Header.astro` | Sticky nav, anchor links, WhatsApp CTA, accessible mobile menu toggle |
 | Footer | `src/components/Footer.astro` | NAP, hours, quick links, Instagram, WhatsApp CTA |
 | SectionHeading | `src/components/SectionHeading.astro` | Eyebrow + title + subtitle pattern reused per section |
-| MenuRow | `src/components/MenuRow.astro` | Name/description/price row, supports single or dual (chivito 1x/2x) pricing |
+| MenuRow | `src/components/MenuRow.astro` | Name/description/price row, supports single or dual (chivito 1x/2x) pricing; renders an `OrderStepper` per priced entry |
 | InfoCard | `src/components/InfoCard.astro` | Stat tile used in the "at a glance" grid |
+| OrderStepper | `src/components/OrderStepper.astro` | −/+ quantity control for one orderable line item (48×48px buttons) |
+| CartButton | `src/components/CartButton.astro` | Header cart trigger — `icon` variant (desktop + mobile top bar) and `full` variant (mobile menu row), both with a live item-count badge |
+| CartDrawer | `src/components/CartDrawer.astro` | The order summary panel: item list with inline qty editing, notes/address field, running total, "Enviar pedido por WhatsApp" button, clear-cart button |
 
 ## 5. Layout
 
 | Layout | Path | Purpose |
 |---|---|---|
-| BaseLayout | `src/layouts/BaseLayout.astro` | `<head>` (meta, OG, Twitter Card, JSON-LD), skip link, Header/Footer wrapper |
+| BaseLayout | `src/layouts/BaseLayout.astro` | `<head>` (meta, OG, Twitter Card, JSON-LD), skip link, Header/Footer/CartDrawer wrapper |
 
 ## 6. Data modules (single source of truth)
 
 - `src/lib/business.ts` — NAP, hours, WhatsApp link, geo, social, rating. Every component/page imports from here.
 - `src/lib/menu.ts` — full menu content transcribed from the client's flyer images.
 - `src/lib/schema.ts` — builds `Restaurant` and `WebSite` JSON-LD from `business.ts`.
+- `src/lib/slug.ts` — `slugify()`, used to build stable cart item ids from menu item names.
+
+## 6b. Order-by-WhatsApp cart
+
+Every priced menu item (29 line items: 1 pizza base, 9 burgers, 8 chivito size variants, 5 milanesa
+variants, 3 Tortugón variants, 3 Friendly Box variants) has a quantity stepper. Selecting items:
+
+1. Updates an in-memory cart, persisted to **this browser's `localStorage`** (`instapizza-cart-v1`) —
+   nothing is sent anywhere until the customer taps "Enviar pedido"
+2. Updates the cart badge in the header (desktop icon, mobile icon, mobile menu row — all three stay in sync)
+3. Lets the customer open a summary drawer (`CartDrawer`) to review items, adjust quantities, add a free-text
+   "Notas / dirección" field, and see a running total
+4. On "Enviar pedido por WhatsApp", builds a `wa.me` deep link with the itemized order pre-filled as the
+   message text and opens it in a new tab — the customer still reviews and hits send themselves in WhatsApp
+
+All logic lives in `src/scripts/cart.ts` (vanilla TS, no framework, ~1.8KB gzipped), driven entirely by
+`data-item-id` / `data-item-name` / `data-item-price` attributes on the stepper markup — so the cart never
+needs its own copy of menu data and can't drift out of sync with `menu.ts`.
+
+**Known limitation, by design:** pizza topping combinations (comunes/especiales/premium) aren't individually
+orderable — the pricing depends on how many toppings of each tier are chosen, which doesn't reduce to a flat
+per-item price. The Muzza base pizza is orderable as a single line item, and there's a hint next to it telling
+customers to note their topping choices in the "Notas" field. If the client wants full topping selection, that
+would need a small pricing-rules engine — flag if that's wanted and it can be scoped separately.
+
+The "Al plato" milanesa (no listed price) intentionally has no stepper — nothing to add at an unknown price.
 
 ## 7. SEO checklist
 
@@ -74,7 +103,9 @@ anchor-linked from the header/footer nav (`#menu`, `#nosotros`, `#galeria`, `#ub
       `<address>` for NAP, one `<h1>`, `<h2>` per section, `<h3>` per menu subsection
 - [x] Skip-to-content link, `aria-expanded` on mobile toggle (verified via JS — flips correctly), `aria-hidden`
       on decorative SVGs, `aria-current` not applicable (single page, no multi-page nav state)
-- [x] 48×48px minimum touch targets on interactive controls (nav toggle, buttons)
+- [x] 48×48px minimum touch targets on interactive controls (nav toggle, buttons, cart steppers — verified via JS `getBoundingClientRect`)
+- [x] Cart drawer: `role="dialog" aria-modal="true"`, `aria-labelledby`, Escape closes it, focus moves to the
+      close button on open and returns to whatever triggered it on close
 - [x] NAP identical across footer, location section, and JSON-LD (all pull from `business.ts`)
 
 ## 8. Content needs
@@ -157,20 +188,26 @@ InstaPizza Uruguay Gonzalo/
 │       └── gallery-*.jpg (6 files)
 └── src/
     ├── components/
+    │   ├── CartButton.astro
+    │   ├── CartDrawer.astro
     │   ├── Footer.astro
     │   ├── Header.astro
     │   ├── InfoCard.astro
     │   ├── MenuRow.astro
+    │   ├── OrderStepper.astro
     │   └── SectionHeading.astro
     ├── layouts/
     │   └── BaseLayout.astro
     ├── lib/
     │   ├── business.ts
     │   ├── menu.ts
-    │   └── schema.ts
+    │   ├── schema.ts
+    │   └── slug.ts
     ├── pages/
     │   ├── 404.astro
     │   └── index.astro
+    ├── scripts/
+    │   └── cart.ts
     └── styles/
         └── global.css
 ```
