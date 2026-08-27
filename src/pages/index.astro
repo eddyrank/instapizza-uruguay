@@ -35,10 +35,28 @@ const gallery = [
   schema={[restaurantSchema(), websiteSchema()]}
 >
   <!-- Hero -->
-  <section class="relative overflow-hidden bg-ink-950 bg-gingham">
-    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950/60 via-ink-950/85 to-ink-950" aria-hidden="true"></div>
-    <div class="container-wide relative section-padding grid gap-10 lg:grid-cols-2 lg:items-center">
-      <div>
+  <section class="relative flex min-h-[560px] items-center overflow-hidden bg-ink-950 sm:min-h-[640px] lg:min-h-[720px]">
+    <img
+      src="/images/pizza-jamon-cheddar-instapizza.jpg"
+      alt=""
+      width="1800"
+      height="1200"
+      loading="eager"
+      fetchpriority="high"
+      class="absolute inset-0 h-full w-full object-cover"
+    />
+    <div
+      class="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink-950 via-ink-950/85 to-ink-950/25"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950/50 via-transparent to-ink-950"
+      aria-hidden="true"
+    >
+    </div>
+    <div class="container-wide section-padding relative">
+      <div class="max-w-xl">
         <p class="font-script text-3xl text-sauce-400">Recién salida del horno</p>
         <h1 class="mt-2 text-5xl leading-[1.05] sm:text-6xl">
           Insta<span class="text-cream-50">pizza</span> Delivery
@@ -61,17 +79,6 @@ const gallery = [
           <span>·</span>
           <span>{business.address.city}, {business.address.region}</span>
         </div>
-      </div>
-      <div class="overflow-hidden rounded-xl border border-ink-700">
-        <img
-          src="/images/pizza-jamon-cheddar-instapizza.jpg"
-          alt="Pizza de jamón y cheddar de Instapizza recién cortada, con las cajas de delivery de fondo"
-          width="1800"
-          height="1200"
-          loading="eager"
-          fetchpriority="high"
-          class="aspect-[4/3] h-full w-full object-cover lg:aspect-square"
-        />
       </div>
     </div>
   </section>
