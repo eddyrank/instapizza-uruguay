@@ -462,8 +462,27 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
   <!-- 5. Delivery -->
   <section id="delivery" class="border-t border-ink-700 bg-ink-900 section-padding">
     <div class="container-wide">
-      <SectionHeading eyebrow="Cómo llega" title="Delivery" />
-      <div class="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <SectionHeading eyebrow="Delivery" title="Instapizza llega a tu casa" />
+      <div class="mx-auto mt-6 max-w-2xl space-y-4 text-center text-cream-100/80">
+        <p>
+          Ahora podés disfrutar tus favoritos de Instapizza sin moverte de casa. Pedí nuestras pizzas,
+          hamburguesas, tortugones, milanesas, chivitos y mucho más a través de nuestro delivery.
+        </p>
+        <p>
+          Realizamos entregas en todo San Carlos, con un servicio ágil y una atención personalizada para que
+          cada pedido llegue de la mejor manera.
+        </p>
+        <p>
+          Recibí productos elaborados con ingredientes de primera calidad, preparados especialmente para que
+          disfrutes en la comodidad de tu hogar.
+        </p>
+      </div>
+      <div class="mt-6 text-center">
+        <a href={business.whatsappHref} target="_blank" rel="noopener noreferrer" class="btn-primary">
+          Hacé tu pedido y disfrutá Instapizza donde quieras
+        </a>
+      </div>
+      <div class="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <InfoCard label="Zonas" value={business.delivery.zones ?? 'Consultar'} detail="Escribinos por WhatsApp" />
         <InfoCard label="Costo" value={business.delivery.cost ?? 'Consultar'} detail="Según la zona" />
         <InfoCard
@@ -531,6 +550,69 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
             <p class="mt-1 text-sm text-cream-100/70">{business.rating.count} reseñas reales de vecinos de San Carlos.</p>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quiénes somos -->
+  <section id="quienes-somos" class="border-t border-ink-700 bg-ink-900 section-padding">
+    <div class="container-wide grid gap-10 lg:grid-cols-[minmax(0,360px)_1fr] lg:items-start">
+      <div class="lg:sticky lg:top-24">
+        <div class="flex aspect-[3/4] items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-ink-600 bg-ink-950 text-center text-sm text-cream-100/50">
+          Foto de Gonzalo — pendiente de agregar
+        </div>
+        <p class="mt-4 text-center font-display text-lg normal-case tracking-normal text-cream-50">Gonzalo Herrera</p>
+        <p class="text-center text-sm text-cream-100/60">Creador de Instapizza</p>
+      </div>
+      <div>
+        <p class="font-script text-3xl text-sauce-400">Una idea que nació de una necesidad</p>
+        <h2 class="mt-1 text-3xl sm:text-4xl">Quiénes somos</h2>
+        <div class="mt-6 space-y-4 text-cream-100/80">
+          <p>Mi nombre es Gonzalo Herrera y soy el creador de Instapizza.</p>
+          <p>
+            Todo empezó en febrero de 2017, cuando se me cayó un trabajo de verano y decidí buscar una nueva
+            alternativa. Siempre me había gustado la gastronomía — tenía experiencia en el rubro y, sobre todo,
+            me apasionaba la pizza.
+          </p>
+          <p>
+            Así arrancamos: desde la cocina de casa, trabajando únicamente con delivery y dándonos a conocer por
+            Instagram. Desde el primer día conté con la ayuda de mi madre, clave en esos primeros pasos de
+            transformar una cocina casera en una producción de pizzas.
+          </p>
+          <p>
+            En ese momento, en San Carlos predominaban las pizzetas por metro. Nosotros apostamos por algo
+            diferente: pizzetas redondas, individuales y con identidad propia, acompañadas de una salsa muy
+            especial basada en una receta de mi madre.
+          </p>
+          <p>
+            La respuesta fue mucho más grande de lo que imaginábamos. Instapizza se convirtió en una moda local
+            y, con el tiempo, fuimos incorporando equipamiento, sumando gente al equipo y ampliando la
+            propuesta con hamburguesas, chivitos, tortugones, milanesas y más.
+          </p>
+          <p>
+            Durante estos años seguí aprendiendo y formándome, perfeccionando recetas, procesos y productos.
+            Mucho de lo que somos hoy nació de probar, equivocarnos, estudiar y volver a intentarlo — siempre
+            buscando mejorar y trabajar con materias primas de primera calidad.
+          </p>
+          <p>Hoy, después de más de nueve años, seguimos creciendo y manteniendo intacta nuestra esencia.</p>
+        </div>
+
+        <div class="mt-10 rounded-xl border border-gold-600/40 bg-ink-950 p-6 sm:p-8">
+          <p class="text-sm font-semibold uppercase tracking-wide text-gold-400">Nuestra misión</p>
+          <h3 class="mt-1 text-2xl normal-case tracking-normal">Hacer felices a nuestros clientes a través de nuestros productos</h3>
+          <p class="mt-4 text-cream-100/80">
+            Creemos que la comida rápida también puede ser comida de calidad. Por eso cuidamos cada ingrediente,
+            cada preparación y cada pedido que sale de nuestra cocina.
+          </p>
+          <p class="mt-3 text-cream-100/80">
+            Nuestros clientes fueron, son y seguirán siendo una parte fundamental de esta historia. Ustedes nos
+            permitieron crecer y son quienes nos motivan a intentar ser mejores cada día.
+          </p>
+        </div>
+
+        <p class="mt-8 font-script text-2xl text-sauce-400">
+          Instapizza nació de una necesidad, creció con esfuerzo y se convirtió en una pasión.
+        </p>
       </div>
     </div>
   </section>
