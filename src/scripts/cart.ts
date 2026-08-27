@@ -224,6 +224,7 @@ function openDrawer() {
   drawer.setAttribute('aria-hidden', 'false');
   document.getElementById('cart-close')?.focus();
   document.body.classList.add('overflow-hidden');
+  document.getElementById('floating-order-btn')?.classList.add('hidden');
 }
 
 function closeDrawer() {
@@ -235,6 +236,7 @@ function closeDrawer() {
   drawer.classList.add('hidden');
   drawer.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('overflow-hidden');
+  document.getElementById('floating-order-btn')?.classList.remove('hidden');
   lastFocusedBeforeOpen?.focus();
 }
 

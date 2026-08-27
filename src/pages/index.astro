@@ -6,7 +6,6 @@ import InfoCard from '../components/InfoCard.astro';
 import OrderStepper from '../components/OrderStepper.astro';
 import { business } from '../lib/business';
 import { restaurantSchema, websiteSchema } from '../lib/schema';
-import { slugify } from '../lib/slug';
 import {
   pizzas,
   burgers,
@@ -15,9 +14,9 @@ import {
   milanesas,
   tortugon,
   friendlyBox,
+  comingSoonCategories,
 } from '../lib/menu';
-
-const todayHours = business.hours[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
+import { slugify } from '../lib/slug';
 
 const gallery = [
   { src: '/images/gallery-pizza-langostinos.jpg', alt: 'Pizza de langostinos de Instapizza en su caja', width: 1200, height: 800 },
@@ -27,6 +26,14 @@ const gallery = [
   { src: '/images/gallery-pizza-porcion.jpg', alt: 'Porción de pizza de Instapizza servida desde la caja', width: 800, height: 1200 },
   { src: '/images/gallery-sandwich-pita.jpg', alt: 'Sandwich en pan pita de Instapizza con aceitunas y morrón', width: 675, height: 1200 },
 ] as const;
+
+// "Más pedidos" — no real sales/order data exists yet, so this is a best-effort
+// pick based on which items the client's own flyer campaigns featured most
+// (see PROJECT_SCOPE.md). Reuses the exact same cart ids as their canonical
+// menu rows, so a qty added here stays in sync with the Menú section.
+const pizzachiviData = chivitos.find((c) => c.name === 'Pizzachivi')!;
+const boomData = burgers.find((b) => b.name === 'Boom')!;
+const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan)')!;
 ---
 
 <BaseLayout
@@ -34,8 +41,8 @@ const gallery = [
   description={business.description}
   schema={[restaurantSchema(), websiteSchema()]}
 >
-  <!-- Hero -->
-  <section class="relative flex min-h-[560px] items-center overflow-hidden bg-ink-950 sm:min-h-[640px] lg:min-h-[720px]">
+  <!-- 1. Hero -->
+  <section class="relative flex min-h-[480px] items-center overflow-hidden bg-ink-950 sm:min-h-[560px]">
     <img
       src="/images/pizza-jamon-cheddar-instapizza.jpg"
       alt=""
@@ -57,48 +64,129 @@ const gallery = [
     </div>
     <div class="w-full section-padding relative">
       <div class="max-w-lg">
-        <p class="font-script text-3xl text-sauce-400">Recién salida del horno</p>
-        <h1 class="mt-2 text-5xl leading-[1.05] sm:text-6xl">
-          Insta<span class="text-cream-50">pizza</span> Delivery
+        <h1 class="text-5xl leading-[1.05] sm:text-6xl">
+          Insta<span class="text-cream-50">pizza</span>
         </h1>
-        <p class="mt-5 max-w-md text-lg text-cream-100/85">
-          {business.tagline} en San Carlos, Maldonado. Pizzas al molde, burgers, chivitos, milanesas y sandwiches
-          artesanales — pedís por WhatsApp y te lo llevamos a la puerta.
-        </p>
-        <div class="mt-8 flex flex-wrap gap-4">
-          <a href={business.whatsappHref} target="_blank" rel="noopener noreferrer" class="btn-primary">
-            Pedí por WhatsApp
-          </a>
-          <a href="#menu" class="btn-outline">Ver el menú</a>
-        </div>
-        <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-cream-100/80">
-          <span class="inline-flex items-center gap-1.5">
-            <svg aria-hidden="true" viewBox="0 0 20 20" class="h-4 w-4 fill-gold-400"><path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.8L10 14.9l-5.2 2.62.99-5.8-4.21-4.1 5.82-.85z"/></svg>
-            {business.rating.value} · {business.rating.count} reseñas en Google
-          </span>
-          <span>·</span>
-          <span>{business.address.city}, {business.address.region}</span>
+        <p class="mt-4 max-w-sm text-lg text-cream-100/85">Pizza, burgers y chivitos en San Carlos.</p>
+        <div class="mt-8">
+          <a href="#menu" class="btn-primary">Hacer pedido</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Info at a glance -->
-  <section class="border-y border-ink-700 bg-ink-900">
-    <div class="container-wide section-padding !py-10">
-      <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <InfoCard label="Hoy" value={todayHours.opens ? `${todayHours.opens} – ${todayHours.closes}` : 'Cerrado'} detail={todayHours.day} />
-        <InfoCard label="Calificación" value={`${business.rating.value}★`} detail={`${business.rating.count} reseñas`} />
-        <InfoCard label="Pedidos" value="WhatsApp" detail={business.phoneDisplay} />
-        <InfoCard label="Zona" value="San Carlos" detail="Maldonado" />
+  <!-- 2. Promos -->
+  <section id="promos" class="section-padding">
+    <div class="container-wide">
+      <SectionHeading eyebrow="Ofertas" title="Promos" subtitle="Combos pensados para compartir, con todo incluido." />
+      <div class="mt-10 grid gap-6 lg:grid-cols-3">
+        <div class="overflow-hidden rounded-xl border border-gold-600/40 bg-ink-900">
+          <img
+            src="/images/tortugon-carne-picada.jpg"
+            alt="Tortugón de Carne Picada, promo con Coca-Cola 1.5L"
+            width="1800"
+            height="965"
+            loading="lazy"
+            decoding="async"
+            class="aspect-[4/3] w-full object-cover"
+          />
+          <div class="p-6">
+            <p class="text-sm font-semibold uppercase tracking-wide text-sauce-400">Super promo</p>
+            <h3 class="mt-1 font-display text-xl normal-case tracking-normal text-cream-50">
+              {tortugon.name} + Coca 1.5L
+            </h3>
+            <p class="price-tag mt-2 text-3xl">${tortugon.promoConCoca}</p>
+            <div class="mt-4">
+              <OrderStepper id="tortugon-promo-coca" name={`${tortugon.name} + Coca 1.5L`} price={tortugon.promoConCoca} />
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-sauce-600/50 bg-ink-900 p-6">
+          <p class="text-sm font-semibold uppercase tracking-wide text-sauce-400">Plato completo</p>
+          <h3 class="mt-1 font-display text-xl normal-case tracking-normal text-cream-50">{milanesaNapolitanaPlato.name}</h3>
+          <p class="mt-2 text-sm text-cream-100/70">{milanesaNapolitanaPlato.description}</p>
+          <p class="price-tag mt-4 text-3xl">${milanesaNapolitanaPlato.price}</p>
+          <div class="mt-4">
+            <OrderStepper
+              id="milanesa-napolitana-plato"
+              name={milanesaNapolitanaPlato.name}
+              price={milanesaNapolitanaPlato.price}
+            />
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-gold-600/40 bg-ink-900 p-6">
+          <p class="text-sm font-semibold uppercase tracking-wide text-gold-400">Para compartir</p>
+          <h3 class="mt-1 font-display text-xl normal-case tracking-normal text-cream-50">{friendlyBox.name}</h3>
+          <p class="mt-2 text-sm text-cream-100/70">{friendlyBox.description}</p>
+          <div class="mt-4 space-y-3">
+            {
+              friendlyBox.options.map((o) => (
+                <div class="flex items-center justify-between gap-3 rounded-lg border border-ink-700 bg-ink-950 px-3 py-2">
+                  <div>
+                    <p class="text-sm font-semibold text-cream-50">{o.name}</p>
+                    <p class="price-tag text-lg">${o.price}</p>
+                  </div>
+                  <OrderStepper id={`combo-${slugify(o.name)}`} name={`${friendlyBox.name} ${o.name}`} price={o.price} />
+                </div>
+              ))
+            }
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Menu -->
+  <!-- 3. Más pedidos -->
+  <section class="border-t border-ink-700 bg-ink-900 section-padding">
+    <div class="container-wide">
+      <SectionHeading eyebrow="Favoritos" title="Más pedidos" />
+      <p class="mx-auto -mt-6 max-w-xl text-center text-xs text-cream-100/50">
+        Todavía no tenemos datos reales de ventas conectados — esta selección se basa en lo que más destacamos en
+        nuestras propias promos. Avisanos si querés reemplazarla por tus productos más vendidos de verdad.
+      </p>
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-xl border border-ink-700 bg-ink-950 p-5 text-center">
+          <p class="font-script text-xl text-sauce-400">Muzza</p>
+          <p class="mt-1 text-sm text-cream-100/70">{pizzas.base.size}</p>
+          <p class="price-tag mt-2 text-2xl">${pizzas.base.price}</p>
+          <div class="mt-3 flex justify-center">
+            <OrderStepper id="pizza-muzza" name={`Pizza ${pizzas.base.name} (${pizzas.base.size})`} price={pizzas.base.price} />
+          </div>
+        </div>
+        <div class="rounded-xl border border-ink-700 bg-ink-950 p-5 text-center">
+          <p class="font-display text-lg normal-case tracking-normal text-cream-50">Pizzachivi</p>
+          <p class="mt-1 text-xs text-cream-100/60">Chivito completo</p>
+          <p class="price-tag mt-2 text-2xl">${pizzachiviData.single}</p>
+          <div class="mt-3 flex justify-center">
+            <OrderStepper id="chivito-pizzachivi-1" name="Pizzachivi (1)" price={pizzachiviData.single} />
+          </div>
+        </div>
+        <div class="rounded-xl border border-ink-700 bg-ink-950 p-5 text-center">
+          <p class="font-display text-lg normal-case tracking-normal text-cream-50">Boom</p>
+          <p class="mt-1 text-xs text-cream-100/60">Burger doble</p>
+          <p class="price-tag mt-2 text-2xl">${boomData.price}</p>
+          <div class="mt-3 flex justify-center">
+            <OrderStepper id="burger-boom" name="Boom" price={boomData.price} />
+          </div>
+        </div>
+        <div class="rounded-xl border border-ink-700 bg-ink-950 p-5 text-center">
+          <p class="font-display text-lg normal-case tracking-normal text-cream-50">Napolitana al pan</p>
+          <p class="mt-1 text-xs text-cream-100/60">Milanesa</p>
+          <p class="price-tag mt-2 text-2xl">${napolitanaAlPanData.price}</p>
+          <div class="mt-3 flex justify-center">
+            <OrderStepper id="milanesa-napolitana-al-pan" name="Napolitana (al pan)" price={napolitanaAlPanData.price} />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Menú completo -->
   <section id="menu" class="section-padding">
     <div class="container-wide">
-      <SectionHeading eyebrow="Nuestro menú" title="Todo lo que pedís, en una caja" />
+      <SectionHeading eyebrow="Nuestro menú" title="Menú completo" />
 
       <!-- Pizzas -->
       <div class="mt-14">
@@ -275,11 +363,57 @@ const gallery = [
           </div>
         </div>
       </div>
+
+      <!-- Coming soon categories -->
+      <div class="mt-16 grid gap-4 sm:grid-cols-3">
+        {
+          comingSoonCategories.map((label) => (
+            <div class="rounded-xl border border-dashed border-ink-600 bg-ink-900/50 p-5 text-center">
+              <h3 class="text-lg">{label}</h3>
+              <p class="mt-2 text-xs text-cream-100/50">Muy pronto vas a poder pedir {label.toLowerCase()} por acá.</p>
+            </div>
+          ))
+        }
+      </div>
     </div>
   </section>
 
-  <!-- About -->
-  <section id="nosotros" class="border-t border-ink-700 bg-ink-900 section-padding">
+  <!-- 5. Delivery -->
+  <section id="delivery" class="border-t border-ink-700 bg-ink-900 section-padding">
+    <div class="container-wide">
+      <SectionHeading eyebrow="Cómo llega" title="Delivery" />
+      <div class="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <InfoCard label="Zonas" value={business.delivery.zones ?? 'Consultar'} detail="Escribinos por WhatsApp" />
+        <InfoCard label="Costo" value={business.delivery.cost ?? 'Consultar'} detail="Según la zona" />
+        <InfoCard
+          label="Horarios"
+          value={business.hours.some((h) => h.opens) ? '20:00 en adelante' : 'Consultar'}
+          detail="Martes a domingo"
+        />
+        <InfoCard label="Tiempo estimado" value={business.delivery.estimatedTime ?? 'Consultar'} detail="Puede variar" />
+      </div>
+      <table class="mt-10 w-full max-w-sm text-sm text-cream-100/80">
+        <caption class="sr-only">Horario de atención de {business.name}</caption>
+        <tbody>
+          {
+            business.hours.map((h) => (
+              <tr class="border-b border-ink-700">
+                <th scope="row" class="py-2 text-left font-normal">{h.day}</th>
+                <td class="py-2 text-right">{h.opens ? `${h.opens} – ${h.closes}` : 'Cerrado'}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+      <p class="mt-4 max-w-lg text-xs text-cream-100/50">
+        Todavía no tenemos confirmadas las zonas de cobertura exactas, el costo del envío ni el tiempo estimado de
+        entrega — por ahora consultalo directo por WhatsApp al hacer tu pedido.
+      </p>
+    </div>
+  </section>
+
+  <!-- 6. Por qué Instapizza -->
+  <section id="por-que-instapizza" class="section-padding">
     <div class="container-wide grid gap-10 lg:grid-cols-2 lg:items-center">
       <div class="overflow-hidden rounded-xl border border-ink-700">
         <img
@@ -293,31 +427,66 @@ const gallery = [
         />
       </div>
       <div>
-        <SectionHeading eyebrow="Nosotros" title="Sabor casero, entregado rápido" align="left" />
+        <SectionHeading eyebrow="Nosotros" title="Por qué Instapizza" align="left" />
         <p class="mt-5 text-cream-100/80">
-          En Instapizza Delivery preparamos pizzas al molde, burgers, chivitos y milanesas como se hacen en casa,
-          con ingredientes frescos y porciones generosas. Trabajamos todas las noches para que San Carlos tenga
-          delivery de comida casera hecha con dedicación.
+          Preparamos pizzas al molde, burgers, chivitos y milanesas como se hacen en casa, con ingredientes frescos
+          y porciones generosas, todas las noches para San Carlos.
         </p>
-        <p class="mt-4 text-cream-100/80">
-          Hacé tu pedido por WhatsApp y lo tenés en la puerta de tu casa, calentito y recién salido de la cocina.
-        </p>
-        <div class="mt-6 flex items-center gap-2 text-cream-100/80">
-          <svg aria-hidden="true" viewBox="0 0 20 20" class="h-5 w-5 fill-gold-400"><path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.8L10 14.9l-5.2 2.62.99-5.8-4.21-4.1 5.82-.85z"/></svg>
-          <span><strong class="text-cream-50">{business.rating.value} de 5</strong> — {business.rating.count} reseñas en Google</span>
+        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+          <div class="rounded-lg border border-ink-700 bg-ink-900 p-4">
+            <p class="font-semibold text-cream-50">Ingredientes frescos</p>
+            <p class="mt-1 text-sm text-cream-100/70">Porciones generosas, preparadas al momento.</p>
+          </div>
+          <div class="rounded-lg border border-ink-700 bg-ink-900 p-4">
+            <p class="font-semibold text-cream-50">Todas las noches</p>
+            <p class="mt-1 text-sm text-cream-100/70">Martes a domingo desde las 20:00.</p>
+          </div>
+          <div class="rounded-lg border border-ink-700 bg-ink-900 p-4">
+            <p class="font-semibold text-cream-50">Pedís por WhatsApp</p>
+            <p class="mt-1 text-sm text-cream-100/70">Sin apps ni registros — armás tu pedido y lo confirmás al toque.</p>
+          </div>
+          <div class="rounded-lg border border-ink-700 bg-ink-900 p-4">
+            <p class="font-semibold text-cream-50">{business.rating.value}★ en Google</p>
+            <p class="mt-1 text-sm text-cream-100/70">{business.rating.count} reseñas reales de vecinos de San Carlos.</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Gallery -->
-  <section id="galeria" class="section-padding">
+  <!-- 7. Reseñas -->
+  <section id="resenas" class="border-t border-ink-700 bg-ink-900 section-padding">
+    <div class="container-narrow text-center">
+      <SectionHeading eyebrow="Lo que dicen" title="Reseñas" />
+      <div class="mt-8 flex items-center justify-center gap-2">
+        <svg aria-hidden="true" viewBox="0 0 20 20" class="h-8 w-8 fill-gold-400"><path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.8L10 14.9l-5.2 2.62.99-5.8-4.21-4.1 5.82-.85z"/></svg>
+        <span class="font-display text-4xl text-gold-400">{business.rating.value}</span>
+        <span class="text-cream-100/70">/ 5 · {business.rating.count} reseñas en Google</span>
+      </div>
+      <blockquote class="mx-auto mt-8 max-w-xl border-l-2 border-gold-500 pl-6 text-left text-lg italic text-cream-100/90">
+        “{business.reviewQuote}”
+        <footer class="mt-2 text-sm not-italic text-cream-100/50">— Reseña real en Google</footer>
+      </blockquote>
+      <a href={business.mapsUrl} target="_blank" rel="noopener noreferrer" class="btn-outline mt-8">
+        Ver todas las reseñas en Google
+      </a>
+    </div>
+  </section>
+
+  <!-- 8. Instagram -->
+  <section id="instagram" class="section-padding">
     <div class="container-wide">
-      <SectionHeading eyebrow="Galería" title="Lo que sale de nuestra cocina" />
+      <SectionHeading eyebrow="Instagram" title="Seguinos @instapizza.delivery" subtitle="Mirá lo que sale de la cocina." />
       <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
         {
           gallery.map((photo) => (
-            <div class="aspect-square overflow-hidden rounded-xl border border-ink-700">
+            <a
+              href={business.social.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group aspect-square overflow-hidden rounded-xl border border-ink-700"
+              aria-label={`Ver más fotos en Instagram — ${photo.alt}`}
+            >
               <img
                 src={photo.src}
                 alt={photo.alt}
@@ -325,20 +494,25 @@ const gallery = [
                 height={photo.height}
                 loading="lazy"
                 decoding="async"
-                class="h-full w-full object-cover transition duration-300 hover:scale-105"
+                class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
               />
-            </div>
+            </a>
           ))
         }
+      </div>
+      <div class="mt-8 text-center">
+        <a href={business.social.instagram} target="_blank" rel="noopener noreferrer" class="btn-primary">
+          Seguinos en Instagram
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- Location -->
+  <!-- 9. Ubicación / Contacto -->
   <section id="ubicacion" class="border-t border-ink-700 bg-ink-900 section-padding">
     <div class="container-wide grid gap-10 lg:grid-cols-2">
       <div>
-        <SectionHeading eyebrow="Encontranos" title="Ubicación y horarios" align="left" />
+        <SectionHeading eyebrow="Encontranos" title="Ubicación y contacto" align="left" />
         <address class="not-italic mt-6 space-y-4 text-cream-100/85">
           <p class="flex items-start gap-3">
             <svg aria-hidden="true" viewBox="0 0 20 20" class="mt-0.5 h-5 w-5 shrink-0 fill-gold-400"><path d="M10 1a6 6 0 0 0-6 6c0 4.5 6 12 6 12s6-7.5 6-12a6 6 0 0 0-6-6zm0 8.5A2.5 2.5 0 1 1 12.5 7 2.5 2.5 0 0 1 10 9.5z"/></svg>
@@ -349,19 +523,6 @@ const gallery = [
             <a href={business.phoneHref} class="transition hover:text-gold-400">{business.phoneDisplay}</a>
           </p>
         </address>
-        <table class="mt-6 w-full max-w-sm text-sm text-cream-100/80">
-          <caption class="sr-only">Horario de atención de {business.name}</caption>
-          <tbody>
-            {
-              business.hours.map((h) => (
-                <tr class="border-b border-ink-700">
-                  <th scope="row" class="py-2 text-left font-normal">{h.day}</th>
-                  <td class="py-2 text-right">{h.opens ? `${h.opens} – ${h.closes}` : 'Cerrado'}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
         <div class="mt-8 flex flex-wrap gap-4">
           <a href={business.whatsappHref} target="_blank" rel="noopener noreferrer" class="btn-primary">
             Pedí por WhatsApp
@@ -382,17 +543,6 @@ const gallery = [
           title={`Mapa de ubicación de ${business.name}`}
         ></iframe>
       </div>
-    </div>
-  </section>
-
-  <!-- Final CTA -->
-  <section class="section-padding bg-ink-950 text-center">
-    <div class="container-narrow">
-      <h2 class="text-3xl sm:text-4xl">¿Tenés hambre?</h2>
-      <p class="mt-3 text-cream-100/80">Escribinos por WhatsApp y armamos tu pedido al toque.</p>
-      <a href={business.whatsappHref} target="_blank" rel="noopener noreferrer" class="btn-primary mt-6">
-        Pedí por WhatsApp
-      </a>
     </div>
   </section>
 </BaseLayout>

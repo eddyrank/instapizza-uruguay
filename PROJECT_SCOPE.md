@@ -30,11 +30,26 @@ partially:
 
 | Route | Status | Description |
 |---|---|---|
-| `/` | Built | Single page: hero, info-at-a-glance, full menu (pizzas, burgers, chivitos, milanesas, sandwiches, combos), about, gallery, location/hours + map, closing CTA |
+| `/` | Built | Single page, structured to the client's own sitemap (see below) |
 | `/404` | Built | Custom not-found page, `noindex, nofollow` |
 
-This is a one-page site by explicit request — no separate `/menu`, `/contact`, etc. Every section is
-anchor-linked from the header/footer nav (`#menu`, `#nosotros`, `#galeria`, `#ubicacion`).
+This is a one-page site by explicit request — no separate `/menu`, `/contact`, etc. Section order and
+naming follow a structure the client specified directly:
+
+1. **Hero** (`#main-content`) — name, one-line tagline, single "Hacer pedido" CTA scrolling to `#menu`
+2. **Promos** (`#promos`) — Tortugón + Coca super promo, Milanesa Napolitana plato, Friendly Box combos
+3. **Más pedidos** (no anchor — sits between Promos and Menú) — see the caveat in section 8
+4. **Menú completo** (`#menu`) — Pizzas, Burgers, Chivitos, Milanesas, Sandwiches, Combos, plus
+   Papas/Bebidas/Postres as "coming soon" cards (no fabricated items/prices — see section 8)
+5. **Delivery** (`#delivery`) — zonas/costo/horarios/tiempo estimado; only horarios is real data today
+6. **Por qué Instapizza** (`#por-que-instapizza`) — 4 value-prop cards + photo
+7. **Reseñas** (`#resenas`) — real Google rating + the one real review quote from the GBP listing
+8. **Instagram** (`#instagram`) — photo grid styled like a feed + follow CTA (not a live embed — see section 10)
+9. **Ubicación / Contacto** (`#ubicacion`) — address, phone, hours-linked map
+10. **Floating "Pedir ahora" button** — fixed, always visible, opens the cart drawer; hidden while the
+    drawer itself is open so the two don't stack on mobile
+
+Every section is anchor-linked from the header/footer nav.
 
 ## 4. Components
 
@@ -48,6 +63,7 @@ anchor-linked from the header/footer nav (`#menu`, `#nosotros`, `#galeria`, `#ub
 | OrderStepper | `src/components/OrderStepper.astro` | −/+ quantity control for one orderable line item (48×48px buttons) |
 | CartButton | `src/components/CartButton.astro` | Header cart trigger — `icon` variant (desktop + mobile top bar) and `full` variant (mobile menu row), both with a live item-count badge |
 | CartDrawer | `src/components/CartDrawer.astro` | The order summary panel: item list with inline qty editing, notes/address field, running total, "Enviar pedido por WhatsApp" button, clear-cart button |
+| FloatingOrderButton | `src/components/FloatingOrderButton.astro` | Fixed "Pedir ahora" button, always reachable; `cart.ts` hides it while the drawer is open |
 
 ## 5. Layout
 
@@ -87,6 +103,11 @@ would need a small pricing-rules engine — flag if that's wanted and it can be 
 
 The "Al plato" milanesa (no listed price) intentionally has no stepper — nothing to add at an unknown price.
 
+**Same item, multiple sections:** Promos and Más pedidos both feature items that also live in the main
+Menú (e.g. the Tortugón promo, the Muzza base). Those cards reuse the *exact same* `id` as their Menú
+counterpart, so a stepper's qty is always in sync no matter which section it was clicked from — verified
+by incrementing from one section and reading the qty back from the other.
+
 ## 7. SEO checklist
 
 - [x] `robots.txt` in `public/`, points at the sitemap
@@ -110,9 +131,25 @@ The "Al plato" milanesa (no listed price) intentionally has no stepper — nothi
 
 ## 8. Content needs
 
-- **Milanesa "Al plato" price** — the source flyer shows this item without a visible price; the site
-  currently shows "Consultar" instead of a fabricated number. Get the real price from the client.
-- Confirm the client is happy with "Consultar" wording, or provide the price to replace it.
+Nothing below was invented — every gap shows an honest "Consultar" or "coming soon" placeholder rather
+than a fabricated number, so the site is truthful right now, just incomplete in these spots:
+
+- **Delivery zones, cost, and estimated time** (`business.delivery` in `business.ts`, all `null`) — the
+  Delivery section shows "Consultar" for all three. Once the client gives real values, fill in
+  `zones` / `cost` / `estimatedTime` as plain strings and the section updates automatically.
+- **"Más pedidos" is a guess, not real sales data** — built from `pizzas.base` (Muzza), the first chivito
+  (Pizzachivi), the Boom burger, and the al-pan Napolitana milanesa, picked because the client's own flyer
+  campaigns featured them most. If the client has actual best-seller data, swap the four items referenced
+  near the top of `src/pages/index.astro` (search for the `pizzachiviData` / `boomData` /
+  `napolitanaAlPanData` block) — there's also a visible disclaimer note under the section heading that
+  should come out once the list is real.
+- **Papas, Bebidas, Postres** — no items or prices exist anywhere in the source material (flyers, GBP
+  listing) for these three categories the client asked for in the Menú. They render as "coming soon"
+  cards (`comingSoonCategories` in `menu.ts`) rather than invented products. Once the client provides
+  real items, add them to `menu.ts` following the same shape as `burgers` or `milanesas`, wire them into
+  a new `<MenuRow>` block in `index.astro`, and remove that category from `comingSoonCategories`.
+- **Milanesa "Al plato" price** — the source flyer shows this item without a visible price; shows
+  "Consultar" instead of a fabricated number.
 - Optional: an email address, if the client wants one listed (currently blank in `business.ts`).
 
 ## 9. Photo assets — done
@@ -148,6 +185,10 @@ still great as-is for Instagram/WhatsApp status posts — just not embedded in t
   update all four once the real Cloudflare Pages URL (or custom domain) is confirmed
   — search for `instapizza-uruguay.pages.dev` across the repo to catch every occurrence
 - **Milanesa "al plato" price** — see Content needs above
+- **Instagram section** — currently a styled photo grid (reusing the site's own gallery photos) plus a
+  follow button linking to the real profile, *not* a live embed of actual posts. A true live feed needs
+  Instagram's Graph API with a connected business account and an access token — out of scope for a static
+  site without a backend to refresh that token. Flag if the client wants that built as a separate feature.
 - Google Analytics / Meta Pixel, if the client wants tracking (not included by default)
 
 ## 11. Deployment (GitHub → Cloudflare Pages)
@@ -190,6 +231,7 @@ InstaPizza Uruguay Gonzalo/
     ├── components/
     │   ├── CartButton.astro
     │   ├── CartDrawer.astro
+    │   ├── FloatingOrderButton.astro
     │   ├── Footer.astro
     │   ├── Header.astro
     │   ├── InfoCard.astro

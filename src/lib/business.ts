@@ -45,7 +45,16 @@ export const business = {
     instagram: 'https://www.instagram.com/instapizza.delivery',
   },
   rating: { value: 4.2, count: 19 }, // NOTE: snapshot from Google Business Profile at build time — refresh periodically so it doesn't drift from the live listing
+  // Real review quote pulled directly from the Google Business Profile listing.
+  // No reviewer name was shown in the listing snippet, so it's attributed generically.
+  reviewQuote: 'Muy rica la pizza y sobre todo la salsa, además bastante grande.',
   priceRange: '$$',
+  // NOTE: placeholder — delivery zones, cost, and estimated time are not yet confirmed with the client.
+  delivery: {
+    zones: null as string | null,
+    cost: null as string | null,
+    estimatedTime: null as string | null,
+  },
   // NOTE: placeholder — replace once the site is deployed to its real URL / custom domain
   url: 'https://instapizza-uruguay.pages.dev',
 } as const;

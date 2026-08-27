@@ -115,3 +115,8 @@ export const friendlyBox = {
     { name: 'Classic x4', price: 1300 },
   ],
 };
+
+// NOTE: no items/prices exist yet for these three categories — nothing was in the
+// flyer artwork or Google Business Profile for them. Rendered as "coming soon"
+// placeholders rather than inventing products or prices for a real business.
+export const comingSoonCategories = ['Papas', 'Bebidas', 'Postres'] as const;
