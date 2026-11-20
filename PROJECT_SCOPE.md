@@ -193,10 +193,9 @@ still great as-is for Instagram/WhatsApp status posts — just not embedded in t
 
 ## 10. Integrations to configure
 
-- **Domain** — `astro.config.mjs` `site`, `business.ts` `url`, `public/robots.txt`, and `schema.ts`'s
-  `image`/`menu` URLs all currently point at the placeholder `https://instapizza-uruguay.pages.dev`;
-  update all four once the real Cloudflare Pages URL (or custom domain) is confirmed
-  — search for `instapizza-uruguay.pages.dev` across the repo to catch every occurrence
+- **Domain** — live at `https://instapizza-uruguay.instapizza-delivery.workers.dev` (set in
+  `astro.config.mjs` `site`, `business.ts` `url` and `public/robots.txt`). If a custom domain is attached,
+  search for `instapizza-delivery.workers.dev` across the repo and swap all three.
 - **Milanesa "al plato" price** — see Content needs above
 - **Instagram section** — currently a styled photo grid (reusing the site's own gallery photos) plus a
   follow button linking to the real profile, *not* a live embed of actual posts. A true live feed needs
@@ -204,15 +203,19 @@ still great as-is for Instagram/WhatsApp status posts — just not embedded in t
   site without a backend to refresh that token. Flag if the client wants that built as a separate feature.
 - Google Analytics / Meta Pixel, if the client wants tracking (not included by default)
 
-## 11. Deployment (GitHub → Cloudflare Pages)
+## 11. Deployment (GitHub → Cloudflare Workers)
 
-1. `git init`, commit, push to `https://github.com/eddyrank/instapizza-uruguay.git` (done as part of this handoff)
-2. In the Cloudflare dashboard (client's account): **Workers & Pages → Create → Pages → Connect to Git**
-3. Select the `instapizza-uruguay` repo
-4. Build settings: **Framework preset:** Astro · **Build command:** `npm run build` · **Build output directory:** `dist`
-5. Deploy — Cloudflare Pages auto-builds on every push to the connected branch
-6. Once live, update the placeholder domain everywhere listed in section 10, commit, push (triggers a rebuild)
-7. Optional: attach a custom domain via Pages → Custom domains
+The site runs as a static-assets Cloudflare Worker named `instapizza-uruguay`, configured by
+`wrangler.jsonc` (uploads `./dist`, serves `404.html` for unknown paths).
+
+To make every push to `main` go live, connect the repo once in the Cloudflare dashboard (client's account):
+
+1. **Workers & Pages → instapizza-uruguay → Settings → Build → Connect** a Git repository
+2. Pick GitHub → `eddyrank/instapizza-uruguay`, branch `main`
+3. **Build command:** `npm run build` · **Deploy command:** `npx wrangler deploy`
+4. Save. Each push to `main` now builds and deploys; status shows as a check on the GitHub commit.
+
+Before that is connected, pushing to GitHub does **not** change the live site.
 
 ## 12. Future: CMS for non-technical editors
 

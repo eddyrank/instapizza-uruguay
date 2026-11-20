@@ -2,10 +2,10 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 
-// NOTE: placeholder domain — replace with the real Cloudflare Pages URL
-// (or custom domain once one is attached) before launch.
+// Live Cloudflare Workers URL — swap for the custom domain if one is attached.
+
 export default defineConfig({
-  site: 'https://instapizza-uruguay.pages.dev',
+  site: 'https://instapizza-uruguay.instapizza-delivery.workers.dev',
   integrations: [
     tailwind(),
     sitemap({

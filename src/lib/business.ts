@@ -58,6 +58,6 @@ export const business = {
     cost: null as string | null,
     estimatedTime: null as string | null,
   },
-  // NOTE: placeholder — replace once the site is deployed to its real URL / custom domain
-  url: 'https://instapizza-uruguay.pages.dev',
+  // Live Cloudflare Workers URL — swap for the custom domain if one is attached.
+  url: 'https://instapizza-uruguay.instapizza-delivery.workers.dev',
 } as const;

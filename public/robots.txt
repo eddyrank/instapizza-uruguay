@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://instapizza-uruguay.pages.dev/sitemap-index.xml
+Sitemap: https://instapizza-uruguay.instapizza-delivery.workers.dev/sitemap-index.xml
