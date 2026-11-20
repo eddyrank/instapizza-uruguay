@@ -208,14 +208,14 @@ still great as-is for Instagram/WhatsApp status posts — just not embedded in t
 The site runs as a static-assets Cloudflare Worker named `instapizza-uruguay`, configured by
 `wrangler.jsonc` (uploads `./dist`, serves `404.html` for unknown paths).
 
-To make every push to `main` go live, connect the repo once in the Cloudflare dashboard (client's account):
+The Worker is connected to this repo through Cloudflare Workers Builds (InstaPizza Delivery account →
+**Workers & Pages → instapizza-uruguay → Settings → Build**): branch `main`, build `npm run build`, deploy
+`npx wrangler deploy`. Every push to `main` builds and goes live in about a minute; status shows under
+the Worker's **Deployments** tab.
 
-1. **Workers & Pages → instapizza-uruguay → Settings → Build → Connect** a Git repository
-2. Pick GitHub → `eddyrank/instapizza-uruguay`, branch `main`
-3. **Build command:** `npm run build` · **Deploy command:** `npx wrangler deploy`
-4. Save. Each push to `main` now builds and deploys; status shows as a check on the GitHub commit.
-
-Before that is connected, pushing to GitHub does **not** change the live site.
+**If pushes stop deploying:** check that `eddyrank/instapizza-uruguay` is still in the repository list of the
+"Cloudflare Workers and Pages" GitHub app (GitHub → Settings → Applications → Configure). It was missing
+from that list from Sept to Nov 2026, so pushes were silently ignored until it was re-added on 2026-11-20.
 
 ## 12. Future: CMS for non-technical editors
 
