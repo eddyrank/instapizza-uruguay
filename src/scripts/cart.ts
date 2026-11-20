@@ -8,6 +8,8 @@ type Cart = Record<string, CartItem>;
 
 const STORAGE_KEY = 'instapizza-cart-v1';
 const NOTES_KEY = 'instapizza-cart-notes-v1';
+const FIRST_ORDER_KEY = 'instapizza-first-order-v1';
+const FIRST_ORDER_DISCOUNT = 0.1;
 const WHATSAPP_NUMBER = '59894753644';
 const DEFAULT_MESSAGE = 'Hola! Quiero hacer un pedido en Instapizza Delivery.';
 
@@ -44,6 +46,22 @@ function saveNotes(notes: string) {
   }
 }
 
+function loadFirstOrder(): boolean {
+  try {
+    return localStorage.getItem(FIRST_ORDER_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function saveFirstOrder(on: boolean) {
+  try {
+    localStorage.setItem(FIRST_ORDER_KEY, on ? '1' : '0');
+  } catch {
+    // ignore
+  }
+}
+
 let cart: Cart = loadCart();
 
 function money(n: number): string {
@@ -54,8 +72,24 @@ function cartCount(): number {
   return Object.values(cart).reduce((sum, i) => sum + i.qty, 0);
 }
 
-function cartTotal(): number {
+function cartSubtotal(): number {
   return Object.values(cart).reduce((sum, i) => sum + i.qty * i.price, 0);
+}
+
+function isFirstOrder(): boolean {
+  const el = document.getElementById('cart-first-order') as HTMLInputElement | null;
+  return el ? el.checked : false;
+}
+
+// First order placed through the website gets 10% off. There's no account
+// system, so this is honor-based: the customer ticks the box and the
+// discount is spelled out in the WhatsApp message for the shop to confirm.
+function cartDiscount(): number {
+  return isFirstOrder() ? Math.round(cartSubtotal() * FIRST_ORDER_DISCOUNT) : 0;
+}
+
+function cartTotal(): number {
+  return cartSubtotal() - cartDiscount();
 }
 
 function currentNotes(): string {
@@ -71,7 +105,11 @@ function buildWhatsAppUrl(): string {
   }
 
   const lines = entries.map((i) => `• ${i.qty}x ${i.name} — ${money(i.price * i.qty)}`);
-  let text = `Hola! Quiero hacer este pedido:\n\n${lines.join('\n')}\n\nTotal estimado: ${money(cartTotal())}`;
+  let text = `Hola! Quiero hacer este pedido:\n\n${lines.join('\n')}\n\n`;
+  if (cartDiscount() > 0) {
+    text += `Subtotal: ${money(cartSubtotal())}\nPrimer pedido por la web (10% OFF): -${money(cartDiscount())}\n`;
+  }
+  text += `Total estimado: ${money(cartTotal())}`;
 
   const notes = currentNotes();
   if (notes) {
@@ -101,6 +139,15 @@ function renderBadges() {
   document.querySelectorAll('[data-role="cart-total"]').forEach((el) => {
     el.textContent = money(total);
   });
+  const discount = cartDiscount();
+  document.querySelectorAll('[data-role="cart-discount"]').forEach((el) => {
+    el.textContent = `-${money(discount)}`;
+  });
+  const discountRow = document.getElementById('cart-discount-row');
+  if (discountRow) {
+    discountRow.classList.toggle('hidden', discount === 0);
+    discountRow.classList.toggle('flex', discount > 0);
+  }
   document.querySelectorAll<HTMLElement>('[data-role="cart-badge"]').forEach((el) => {
     if (count > 0) {
       el.classList.remove('hidden');
@@ -286,6 +333,15 @@ if (notesEl) {
   notesEl.addEventListener('input', () => {
     saveNotes(notesEl.value);
     renderCheckoutLink();
+  });
+}
+
+const firstOrderEl = document.getElementById('cart-first-order') as HTMLInputElement | null;
+if (firstOrderEl) {
+  firstOrderEl.checked = loadFirstOrder();
+  firstOrderEl.addEventListener('change', () => {
+    saveFirstOrder(firstOrderEl.checked);
+    renderAll();
   });
 }
 

@@ -38,7 +38,7 @@ naming follow a structure the client specified directly:
 
 1. **Hero** (`#main-content`) — name, one-line tagline, single "Hacer pedido" CTA scrolling to `#menu`
 2. **Promos** (`#promos`) — Tortugón + Coca super promo, Milanesa Napolitana plato, Friendly Box combos
-3. **Más pedidos** (no anchor — sits between Promos and Menú) — see the caveat in section 8
+3. **Novedades** (`#novedades`) — replaced "Más pedidos" on 2026-11-19 at the client's request: Chivito Canadiense XL video, Muzza/gustos flyer, medios de pago flyer
 4. **Menú completo** (`#menu`) — Pizzas, Burgers, Chivitos, Milanesas, Sandwiches, Combos
 5. **Delivery** (`#delivery`) — zonas/costo/horarios/tiempo estimado; only horarios is real data today
 6. **Por qué Instapizza** (`#por-que-instapizza`) — 4 value-prop cards + photo

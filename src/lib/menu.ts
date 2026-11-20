@@ -2,7 +2,7 @@
 // Prices are in Uruguayan pesos (UYU) and shown as plain numbers ($ prefix added at render time).
 
 export const pizzas = {
-  base: { name: 'Muzza', size: '32 cm', price: 340 },
+  base: { name: 'Muzza', size: '32 cm', price: 350 },
   common: {
     price: 50,
     label: 'Comunes',
@@ -32,12 +32,10 @@ export const pizzas = {
       'Cebolla caramelizada',
     ],
   },
-  premium: { price: 80, label: 'Premium', items: ['Jamón crudo'] },
   recommended: [
     '4 Quesos',
     'Capresse',
     'Panceta & Cheddar',
-    'Jamón crudo, rúcula y parmesano',
     'Napolitana',
     'Picada',
     'Hawaiana',
@@ -77,12 +75,21 @@ export const chivitos = [
     double: 800,
   },
   {
+    name: 'Canadiense XL',
+    description: '200 g de lomo, tomate, lechuga, huevo, jamón, muzza, panceta, morrones, cebolla, aceitunas, mayonesa',
+    single: 560,
+    double: null,
+  },
+  {
     name: 'Instachivi',
     description: 'Lomo, huevo, cheddar, panceta, tomate, lechuga, cebolla, pepinillos, salsa de la casa, papas fritas',
     single: 420,
     double: 800,
   },
 ] as const;
+
+// New item announced by the client on 2026-11-19 (video flyer in public/videos).
+export const chivitoCanadienseXL = { name: 'Chivito Canadiense XL', price: 560 };
 
 export const milanesaNapolitanaPlato = {
   name: 'Milanesa Napolitana',
@@ -95,7 +102,6 @@ export const milanesas = [
   { name: 'Al pan común', description: 'Tomate, lechuga, huevo, mayonesa + fritas', price: 300 },
   { name: 'Al pan completa', description: 'Jamón, muzza, panceta, tomate, lechuga, huevo, mayonesa + fritas', price: 420 },
   { name: 'Al pan Instamula', description: 'Cheddar, panceta, tomate, rúcula, huevo frito, salsa de la casa + fritas', price: 420 },
-  { name: 'Napolitana (al pan)', description: 'P/2 jamón, muzza, salsa fileto, orégano, ensalada mixta + fritas', price: 590 },
 ] as const;
 
 export const tortugon = {

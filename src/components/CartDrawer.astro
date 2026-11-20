@@ -52,7 +52,22 @@ import { business } from '../lib/business';
     ></textarea>
   </div>
 
-  <div class="mt-5 flex items-center justify-between text-sm">
+  <label
+    class="mt-5 flex cursor-pointer items-start gap-3 rounded-lg border border-gold-600/50 bg-gold-500/10 p-3 text-sm text-cream-100"
+  >
+    <input id="cart-first-order" type="checkbox" class="mt-0.5 h-4 w-4 shrink-0 accent-gold-500" />
+    <span>
+      <span class="font-semibold text-gold-300">Es mi primer pedido por la web</span>
+      <span class="block text-xs text-cream-100/70">10% de descuento en tu primera compra desde el sitio.</span>
+    </span>
+  </label>
+
+  <div id="cart-discount-row" class="mt-4 hidden items-center justify-between text-sm">
+    <span class="text-cream-100/70">Descuento primer pedido (10%)</span>
+    <span class="font-semibold text-gold-300" data-role="cart-discount">-$0</span>
+  </div>
+
+  <div class="mt-3 flex items-center justify-between text-sm">
     <span class="text-cream-100/70">Total estimado</span>
     <span class="price-tag text-xl" data-role="cart-total">$0</span>
   </div>

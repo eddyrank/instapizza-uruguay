@@ -10,6 +10,7 @@ import {
   pizzas,
   burgers,
   chivitos,
+  chivitoCanadienseXL,
   milanesaNapolitanaPlato,
   milanesas,
   tortugon,
@@ -26,13 +27,6 @@ const gallery = [
   { src: '/images/gallery-sandwich-pita.jpg', alt: 'Sandwich en pan pita de Instapizza con aceitunas y morrón', width: 675, height: 1200 },
 ] as const;
 
-// "Más pedidos" — no real sales/order data exists yet, so this is a best-effort
-// pick based on which items the client's own flyer campaigns featured most
-// (see PROJECT_SCOPE.md). Reuses the exact same cart ids as their canonical
-// menu rows, so a qty added here stays in sync with the Menú section.
-const pizzachiviData = chivitos.find((c) => c.name === 'Pizzachivi')!;
-const boomData = burgers.find((b) => b.name === 'Boom')!;
-const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan)')!;
 ---
 
 <BaseLayout
@@ -93,6 +87,15 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
   <section id="promos" class="section-padding">
     <div class="container-wide">
       <SectionHeading eyebrow="Ofertas" title="Promos" subtitle="Combos pensados para compartir, con todo incluido." />
+      <div class="mt-8 flex flex-col items-center justify-between gap-4 rounded-xl border-2 border-dashed border-gold-500 bg-gold-500/10 p-6 text-center sm:flex-row sm:text-left">
+        <div>
+          <p class="font-display text-3xl normal-case tracking-normal text-gold-400">10% OFF en tu primer pedido</p>
+          <p class="mt-1 text-sm text-cream-100/80">
+            Pedí por primera vez desde la web y marcá “Es mi primer pedido” en tu carrito.
+          </p>
+        </div>
+        <a href="#menu" class="btn-primary shrink-0">Ver el menú</a>
+      </div>
       <div class="mt-10 grid gap-6 lg:grid-cols-3">
         <div class="overflow-hidden rounded-xl border border-gold-600/40 bg-ink-900">
           <img
@@ -174,45 +177,72 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
     </div>
   </section>
 
-  <!-- 3. Más pedidos -->
-  <section class="border-t border-ink-700 bg-ink-900 section-padding">
+  <!-- 3. Novedades -->
+  <section id="novedades" class="border-t border-ink-700 bg-ink-900 section-padding">
     <div class="container-wide">
-      <SectionHeading
-        eyebrow="Favoritos"
-        title="Más pedidos"
-        subtitle="Todavía no tenemos datos reales de ventas conectados — esta selección se basa en lo que más destacamos en nuestras propias promos. Avisanos si querés reemplazarla por tus productos más vendidos de verdad."
-      />
-      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="rounded-xl border border-ink-700 bg-ink-950 p-5 text-center">
-          <p class="font-script text-xl text-sauce-400">Muzza</p>
-          <p class="mt-1 text-sm text-cream-100/70">{pizzas.base.size}</p>
-          <p class="price-tag mt-2 text-2xl">${pizzas.base.price}</p>
-          <div class="mt-3 flex justify-center">
-            <OrderStepper id="pizza-muzza" name={`Pizza ${pizzas.base.name} (${pizzas.base.size})`} price={pizzas.base.price} />
+      <SectionHeading eyebrow="Lo último" title="Novedades" />
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        <div class="overflow-hidden rounded-xl border border-sauce-600/50 bg-ink-950">
+          <video
+            src="/videos/chivito-canadiense-xl.mp4"
+            poster="/images/chivito-canadiense-xl-poster.jpg"
+            width="478"
+            height="850"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            aria-label="Video del nuevo Chivito Canadiense XL de Instapizza"
+            class="block aspect-[2/3] w-full bg-black object-contain"
+          ></video>
+          <div class="p-6">
+            <p class="text-sm font-semibold uppercase tracking-wide text-sauce-400">Nuevo</p>
+            <h3 class="mt-1 font-display text-xl normal-case tracking-normal text-cream-50">{chivitoCanadienseXL.name}</h3>
+            <p class="mt-2 text-sm text-cream-100/70">
+              200 g de lomo, tomate, lechuga, huevo, jamón, muzza, panceta, morrones, cebolla, aceitunas y mayonesa.
+            </p>
+            <p class="price-tag mt-4 text-3xl">${chivitoCanadienseXL.price}</p>
+            <div class="mt-4">
+              <OrderStepper id="chivito-canadiense-xl-1" name="Canadiense XL (1)" price={chivitoCanadienseXL.price} />
+            </div>
           </div>
         </div>
-        <div class="rounded-xl border border-ink-700 bg-ink-950 p-5 text-center">
-          <p class="font-display text-lg normal-case tracking-normal text-cream-50">Pizzachivi</p>
-          <p class="mt-1 text-xs text-cream-100/60">Chivito completo</p>
-          <p class="price-tag mt-2 text-2xl">${pizzachiviData.single}</p>
-          <div class="mt-3 flex justify-center">
-            <OrderStepper id="chivito-pizzachivi-1" name="Pizzachivi (1)" price={pizzachiviData.single} />
+
+        <div class="overflow-hidden rounded-xl border border-gold-600/40 bg-ink-950">
+          <img
+            src="/images/flyer-muzza-gustos.jpg"
+            alt={`Muzza 32 cm a $${pizzas.base.price}. Gustos comunes $${pizzas.common.price}: jamón, panceta grillada, aceitunas, choclo, huevo, parmesano, peperoni, ananá, tomate. Especiales $${pizzas.special.price}: roquefort, rúcula, albahaca, cheddar, pesto, morrones, confitados, cebolla caramelizada.`}
+            width="1024"
+            height="1536"
+            loading="lazy"
+            decoding="async"
+            class="block aspect-[2/3] w-full object-cover"
+          />
+          <div class="p-6">
+            <p class="text-sm font-semibold uppercase tracking-wide text-gold-400">Pizzas</p>
+            <h3 class="mt-1 font-display text-xl normal-case tracking-normal text-cream-50">Muzza {pizzas.base.size} · ${pizzas.base.price}</h3>
+            <p class="mt-2 text-sm text-cream-100/70">
+              Sumale los gustos que quieras: comunes +${pizzas.common.price}, especiales +${pizzas.special.price}.
+            </p>
+            <a href="#menu" class="btn-outline mt-4">Armá tu pizza</a>
           </div>
         </div>
-        <div class="rounded-xl border border-ink-700 bg-ink-950 p-5 text-center">
-          <p class="font-display text-lg normal-case tracking-normal text-cream-50">Boom</p>
-          <p class="mt-1 text-xs text-cream-100/60">Burger doble</p>
-          <p class="price-tag mt-2 text-2xl">${boomData.price}</p>
-          <div class="mt-3 flex justify-center">
-            <OrderStepper id="burger-boom" name="Boom" price={boomData.price} />
-          </div>
-        </div>
-        <div class="rounded-xl border border-ink-700 bg-ink-950 p-5 text-center">
-          <p class="font-display text-lg normal-case tracking-normal text-cream-50">Napolitana al pan</p>
-          <p class="mt-1 text-xs text-cream-100/60">Milanesa</p>
-          <p class="price-tag mt-2 text-2xl">${napolitanaAlPanData.price}</p>
-          <div class="mt-3 flex justify-center">
-            <OrderStepper id="milanesa-napolitana-al-pan" name="Napolitana (al pan)" price={napolitanaAlPanData.price} />
+
+        <div class="overflow-hidden rounded-xl border border-gold-600/40 bg-ink-950">
+          <img
+            src="/images/flyer-medios-de-pago.jpg"
+            alt="Aceptamos todos los medios de pago: transferencia bancaria, Prex, Mercado Pago y Santander"
+            width="1024"
+            height="1536"
+            loading="lazy"
+            decoding="async"
+            class="block aspect-[2/3] w-full object-cover"
+          />
+          <div class="p-6">
+            <p class="text-sm font-semibold uppercase tracking-wide text-gold-400">Medios de pago</p>
+            <h3 class="mt-1 font-display text-xl normal-case tracking-normal text-cream-50">Aceptamos todos los medios de pago</h3>
+            <p class="mt-2 text-sm text-cream-100/70">Transferencia bancaria, Prex, Mercado Pago y Santander.</p>
           </div>
         </div>
       </div>
@@ -282,7 +312,7 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
               }
             </ul>
           </div>
-          <div class="grid gap-6 sm:grid-cols-3">
+          <div class="grid gap-6 sm:grid-cols-2">
             <div class="rounded-xl border border-ink-700 bg-ink-900 p-5">
               <p class="text-sm font-semibold uppercase tracking-wide text-cream-100/60">{pizzas.common.label}</p>
               <p class="price-tag mt-1 text-2xl">+${pizzas.common.price}</p>
@@ -315,25 +345,6 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
                         class="pizza-topping h-4 w-4 shrink-0 accent-gold-500"
                         data-topping-name={i}
                         data-topping-price={pizzas.special.price}
-                      />
-                    </label>
-                  ))
-                }
-              </div>
-            </div>
-            <div class="rounded-xl border border-sauce-600/50 bg-ink-900 p-5">
-              <p class="text-sm font-semibold uppercase tracking-wide text-cream-100/60">{pizzas.premium.label}</p>
-              <p class="price-tag mt-1 text-2xl">+${pizzas.premium.price}</p>
-              <div class="mt-3 space-y-2">
-                {
-                  pizzas.premium.items.map((i) => (
-                    <label class="topping-chip flex cursor-pointer items-center justify-between gap-2 rounded-lg border border-ink-700 bg-ink-950 px-3 py-2 text-sm text-cream-100/80 transition">
-                      <span>{i}</span>
-                      <input
-                        type="checkbox"
-                        class="pizza-topping h-4 w-4 shrink-0 accent-gold-500"
-                        data-topping-name={i}
-                        data-topping-price={pizzas.premium.price}
                       />
                     </label>
                   ))
@@ -393,10 +404,14 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
                 id={`chivito-${slugify(c.name)}`}
                 name={c.name}
                 description={c.description}
-                prices={[
-                  { label: '1', value: c.single },
-                  { label: '2', value: c.double },
-                ]}
+                prices={
+                  c.double === null
+                    ? [{ label: '1', value: c.single }]
+                    : [
+                        { label: '1', value: c.single },
+                        { label: '2', value: c.double },
+                      ]
+                }
               />
             ))
           }
@@ -541,7 +556,7 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
         <InfoCard
           label="Horarios"
           value={business.hours.some((h) => h.opens) ? '20:00 en adelante' : 'Consultar'}
-          detail="Martes a domingo"
+          detail="Miércoles a domingo"
         />
         <InfoCard label="Tiempo estimado" value={business.delivery.estimatedTime ?? 'Consultar'} detail="Puede variar" />
       </div>
@@ -592,7 +607,7 @@ const napolitanaAlPanData = milanesas.find((m) => m.name === 'Napolitana (al pan
           </div>
           <div class="rounded-lg border border-ink-700 bg-ink-900 p-4">
             <p class="font-semibold text-cream-50">Todas las noches</p>
-            <p class="mt-1 text-sm text-cream-100/70">Martes a domingo desde las 20:00.</p>
+            <p class="mt-1 text-sm text-cream-100/70">Miércoles a domingo desde las 20:00.</p>
           </div>
           <div class="rounded-lg border border-ink-700 bg-ink-900 p-4">
             <p class="font-semibold text-cream-50">Pedís por WhatsApp</p>
