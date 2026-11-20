@@ -8,10 +8,11 @@ type Cart = Record<string, CartItem>;
 
 const STORAGE_KEY = 'instapizza-cart-v1';
 const NOTES_KEY = 'instapizza-cart-notes-v1';
-const FIRST_ORDER_KEY = 'instapizza-first-order-v1';
-const FIRST_ORDER_DISCOUNT = 0.1;
-const WHATSAPP_NUMBER = '59894753644';
-const DEFAULT_MESSAGE = 'Hola! Quiero hacer un pedido en Instapizza Delivery.';
+import { business } from '../lib/business';
+
+const WHATSAPP_NUMBER = business.whatsappNumber;
+const SITE_TAG = business.whatsappSiteTag;
+const DEFAULT_MESSAGE = `${SITE_TAG}\n\nHola! Quiero hacer un pedido en Instapizza Delivery.`;
 
 function loadCart(): Cart {
   try {
@@ -46,22 +47,6 @@ function saveNotes(notes: string) {
   }
 }
 
-function loadFirstOrder(): boolean {
-  try {
-    return localStorage.getItem(FIRST_ORDER_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-
-function saveFirstOrder(on: boolean) {
-  try {
-    localStorage.setItem(FIRST_ORDER_KEY, on ? '1' : '0');
-  } catch {
-    // ignore
-  }
-}
-
 let cart: Cart = loadCart();
 
 function money(n: number): string {
@@ -72,24 +57,17 @@ function cartCount(): number {
   return Object.values(cart).reduce((sum, i) => sum + i.qty, 0);
 }
 
-function cartSubtotal(): number {
+function cartTotal(): number {
   return Object.values(cart).reduce((sum, i) => sum + i.qty * i.price, 0);
 }
 
-function isFirstOrder(): boolean {
+// First web order gets 10% off, but the site can't tell who has ordered
+// before. So the box only *requests* the discount: it's flagged in the
+// WhatsApp message and Gonzalo confirms it against his chat history for
+// that phone number. Totals shown here are never discounted.
+function wantsFirstOrderDiscount(): boolean {
   const el = document.getElementById('cart-first-order') as HTMLInputElement | null;
   return el ? el.checked : false;
-}
-
-// First order placed through the website gets 10% off. There's no account
-// system, so this is honor-based: the customer ticks the box and the
-// discount is spelled out in the WhatsApp message for the shop to confirm.
-function cartDiscount(): number {
-  return isFirstOrder() ? Math.round(cartSubtotal() * FIRST_ORDER_DISCOUNT) : 0;
-}
-
-function cartTotal(): number {
-  return cartSubtotal() - cartDiscount();
 }
 
 function currentNotes(): string {
@@ -105,11 +83,10 @@ function buildWhatsAppUrl(): string {
   }
 
   const lines = entries.map((i) => `• ${i.qty}x ${i.name} — ${money(i.price * i.qty)}`);
-  let text = `Hola! Quiero hacer este pedido:\n\n${lines.join('\n')}\n\n`;
-  if (cartDiscount() > 0) {
-    text += `Subtotal: ${money(cartSubtotal())}\nPrimer pedido por la web (10% OFF): -${money(cartDiscount())}\n`;
+  let text = `${SITE_TAG}\n\nHola! Quiero hacer este pedido:\n\n${lines.join('\n')}\n\nTotal estimado: ${money(cartTotal())}`;
+  if (wantsFirstOrderDiscount()) {
+    text += `\n\n🎉 Es mi primer pedido por la web: quiero mi 10% OFF (a confirmar)`;
   }
-  text += `Total estimado: ${money(cartTotal())}`;
 
   const notes = currentNotes();
   if (notes) {
@@ -139,15 +116,6 @@ function renderBadges() {
   document.querySelectorAll('[data-role="cart-total"]').forEach((el) => {
     el.textContent = money(total);
   });
-  const discount = cartDiscount();
-  document.querySelectorAll('[data-role="cart-discount"]').forEach((el) => {
-    el.textContent = `-${money(discount)}`;
-  });
-  const discountRow = document.getElementById('cart-discount-row');
-  if (discountRow) {
-    discountRow.classList.toggle('hidden', discount === 0);
-    discountRow.classList.toggle('flex', discount > 0);
-  }
   document.querySelectorAll<HTMLElement>('[data-role="cart-badge"]').forEach((el) => {
     if (count > 0) {
       el.classList.remove('hidden');
@@ -338,11 +306,13 @@ if (notesEl) {
 
 const firstOrderEl = document.getElementById('cart-first-order') as HTMLInputElement | null;
 if (firstOrderEl) {
-  firstOrderEl.checked = loadFirstOrder();
-  firstOrderEl.addEventListener('change', () => {
-    saveFirstOrder(firstOrderEl.checked);
-    renderAll();
-  });
+  // Not remembered between visits on purpose — it starts unticked every time.
+  try {
+    localStorage.removeItem('instapizza-first-order-v1');
+  } catch {
+    // ignore
+  }
+  firstOrderEl.addEventListener('change', renderCheckoutLink);
 }
 
 renderAll();

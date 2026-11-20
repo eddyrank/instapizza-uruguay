@@ -12,9 +12,12 @@ export const business = {
   phoneIntl: '+598 94 753 644',
   phoneHref: 'tel:+59894753644',
   whatsappNumber: '59894753644',
+  // Every WhatsApp message started from the site opens with this line, so
+  // Gonzalo can tell web orders apart from regular chats.
+  whatsappSiteTag: '🌐 Pedido desde la web',
   whatsappHref:
     'https://wa.me/59894753644?text=' +
-    encodeURIComponent('Hola! Quiero hacer un pedido en Instapizza Delivery.'),
+    encodeURIComponent('🌐 Pedido desde la web\n\nHola! Quiero hacer un pedido en Instapizza Delivery.'),
   email: '', // NOTE: placeholder — no public email found on Google Business Profile or Instagram; add if the client has one
   address: {
     street: 'Coronel Leonardo Olivera',
@@ -44,7 +47,7 @@ export const business = {
   social: {
     instagram: 'https://www.instagram.com/instapizza.delivery',
   },
-  rating: { value: 4.2, count: 69 }, // NOTE: snapshot from Google Business Profile at build time — refresh periodically so it doesn't drift from the live listing
+  rating: { value: 4.6, count: 69 }, // NOTE: snapshot from Google Business Profile on 2026-11-19 — refresh periodically so it doesn't drift from the live listing
   // Real review quote pulled directly from the Google Business Profile listing.
   // No reviewer name was shown in the listing snippet, so it's attributed generically.
   reviewQuote: 'Muy rica la pizza y sobre todo la salsa, además bastante grande.',
